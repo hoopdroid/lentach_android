@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/star"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_star_white_24dp"
+        android:title="в избранное"
+        app:showAsAction="always"
+        android:visible="true" />
+
+    <item
+        android:id="@+id/share"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_share_variant_white_24dp"
+        android:title="Поделиться"
+        app:showAsAction="always"
+        android:visible="true" />
+
+</menu>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="image_post_size">100dp</dimen>
+    <dimen name="image_post_grid_size">150dp</dimen>
+    <dimen name="image_post_info">150dp</dimen>
+    <dimen name="image_post_info_slider">120dp</dimen>
+    <dimen name="text_large">16sp</dimen>
+    <dimen name="text_medium">12sp</dimen>
+    <dimen name="text_small">10sp</dimen>
+    <dimen name="text_smallest">8sp</dimen>
+</resources>

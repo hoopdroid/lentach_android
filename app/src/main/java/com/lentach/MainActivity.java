@@ -14,11 +14,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.lentach.adapters.CommentsRVAdapter;
 import com.lentach.adapters.PostsRVAdapter;
 import com.lentach.components.PostsLikeComporator;
 import com.lentach.data.DataService;
 import com.lentach.db.RealmUtils;
+import com.lentach.models.comment.Comment;
 import com.lentach.models.realm.PostRealmModel;
+import com.lentach.models.wallcomments.WallComment;
 import com.lentach.models.wallpost.Attachment;
 import com.lentach.models.wallpost.Likes;
 import com.lentach.models.wallpost.Photo;
@@ -86,6 +89,30 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
 
 
         });
+    }
+
+    protected void getCommentsOfDay(){
+
+        DataService.init().getDataFromServer(new DataService.onRequestCommentsOFDayResult() {
+            int a = 5;
+            @Override
+            public void onRequestCommentsResult(List<Comment> wallComments) {
+                //  CommentsRVAdapter mCommentsRVAdapter = new CommentsRVAdapter(getApplicationContext(),
+                //        wallComments);
+                updateRecyclerView(1);
+                //mRecyclerView.setAdapter(mCommentsRVAdapter);
+                swipeRefreshLayout.setRefreshing(false);
+
+                toolbar.setTitle("Комментарии дня");
+                mBottomBar.setVisibility(View.GONE);
+            }
+
+
+
+        });
+
+
+        int a =5;
     }
 
     protected void getFavorites(){
@@ -197,7 +224,7 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-       // getMenuInflater().inflate(R.menu.menu_main, menu);
+        // getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -228,25 +255,25 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
     @Override
     public void onRefresh() {
         if(mBottomBar.getCurrentTabPosition()==0)
-        getNewPostsData(MainActivity.this);
+            getNewPostsData(MainActivity.this);
         if(mBottomBar.getCurrentTabPosition()==1)
             getHotPostsData();
         swipeRefreshLayout.setRefreshing(true);
     }
 
 
-    public void initDrawer(Toolbar toolbar, final Activity activity) {
+    public void initDrawer(android.support.v7.widget.Toolbar toolbar, final Activity activity) {
 
         PrimaryDrawerItem itemHome = new PrimaryDrawerItem().withName("Главная").withIcon(R.drawable.ic_heart_grey600_24dp);
         PrimaryDrawerItem itemHotPosts = new PrimaryDrawerItem().withName("Избранное").withIcon(R.drawable.ic_star_grey600_24dp);
-        PrimaryDrawerItem itemBestComments = new PrimaryDrawerItem().withName("Топовые комментарии").withIcon(R.drawable.ic_comment_alert_grey600_24dp);
+        PrimaryDrawerItem itemBestComments = new PrimaryDrawerItem().withName("Комментарии дня").withIcon(R.drawable.ic_comment_alert_grey600_24dp);
         PrimaryDrawerItem itemRadio = new PrimaryDrawerItem().withName("#РадиоЛентач").withIcon(R.drawable.ic_bookmark_music_grey600_24dp);
         PrimaryDrawerItem itemSettings = new PrimaryDrawerItem().withName("Настройки").withIcon(R.drawable.ic_settings_grey600_24dp);
 
         AccountHeader headerResult;
         String username="Юзер Лентача";
         if(VKAccessToken.currentToken()!=null)
-        username = VKAccessToken.currentToken().email;
+            username = VKAccessToken.currentToken().email;
 
         headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -283,6 +310,9 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
                             case 1:
                                 mBottomBar.selectTabAtPosition(0,true);
                                 getNewPostsData(activity);
+                                break;
+                            case 3:
+                                getCommentsOfDay();
                                 break;
                             case 2:
                                 getFavorites();

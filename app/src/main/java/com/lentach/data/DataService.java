@@ -8,6 +8,8 @@ import com.lentach.R;
 import com.lentach.components.CommentsComporator;
 import com.lentach.components.IDCommentsComporator;
 import com.lentach.components.IDUsersComporator;
+import com.lentach.data.api.APIManager;
+import com.lentach.models.comment.Comment;
 import com.lentach.models.wallcomments.WallComment;
 import com.lentach.models.wallcomments.users.User;
 import com.lentach.models.wallpost.Post;
@@ -23,6 +25,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by ilyas on 6/22/2016.
@@ -42,7 +48,7 @@ public class DataService {
     public void getPostsFromWall(final Context context, final onRequestResult listener) {
 
         VKRequest vkRequest = new VKApiWall().get(VKParameters.from(VKApiConst.OWNER_ID,-29534144,VKApiConst.COUNT,100));
-       // VKRequest request123 = new VKRequest("wall.search", VKParameters.from(VKApiConst.OWNER_ID,-29534144,"query","#радиолентач"));
+        // VKRequest request123 = new VKRequest("wall.search", VKParameters.from(VKApiConst.OWNER_ID,-29534144,"query","#радиолентач"));
         vkRequest.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
@@ -107,7 +113,25 @@ public class DataService {
                 Toast.makeText(context,"ERROR",Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
+    public void getDataFromServer(final onRequestCommentsOFDayResult listener) {
+
+        APIManager.getApiService().getData(new Callback<List<Comment>>() {
+
+            @Override
+            public void success(List<Comment> wallComments, Response response) {
+
+                listener.onRequestCommentsResult(wallComments);
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                int a = 5;
+
+            }
+        });
     }
 
 
@@ -119,6 +143,9 @@ public class DataService {
         public void onFavoritesResult(List<Post> posts);
     }
     public static interface onRequestCommentsResult {
-        public void onRequestCommentsResult(List<WallComment> posts, List<User> arr3);
+        public void onRequestCommentsResult(List<WallComment> posts,List<User> arr3);
+    }
+    public static interface onRequestCommentsOFDayResult {
+        public void onRequestCommentsResult(List<Comment> posts);
     }
 }

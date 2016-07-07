@@ -97,10 +97,14 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
             int a = 5;
             @Override
             public void onRequestCommentsResult(List<Comment> wallComments) {
+                ArrayList<Comment> comments = new ArrayList<Comment>();
+                comments.addAll(wallComments);
                 //  CommentsRVAdapter mCommentsRVAdapter = new CommentsRVAdapter(getApplicationContext(),
-                //        wallComments);
-                updateRecyclerView(1);
+                //       wallComments);
+                //updateRecyclerView(1);
                 //mRecyclerView.setAdapter(mCommentsRVAdapter);
+
+                int a  =5;
                 swipeRefreshLayout.setRefreshing(false);
 
                 toolbar.setTitle("Комментарии дня");

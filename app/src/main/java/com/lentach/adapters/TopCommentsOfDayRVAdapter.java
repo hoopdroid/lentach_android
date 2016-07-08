@@ -3,6 +3,7 @@ package com.lentach.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +15,13 @@ import com.lentach.R;
 import com.lentach.models.comment.Comment;
 import com.lentach.models.wallcomments.WallComment;
 import com.lentach.navigator.ActivityNavigator;
+import com.lentach.util.LinkUrlSearchHelper;
 import com.lentach.util.UnixConverter;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -29,19 +33,20 @@ import static android.view.View.GONE;
  */
 public class TopCommentsOfDayRVAdapter extends RecyclerView.Adapter<TopCommentsOfDayRVAdapter.ViewHolder> {
 
-    private List<Comment> wallCommentsList;
+    private List<Comment> wallCommentsList = new ArrayList<>();
     private Context context;
 
     public TopCommentsOfDayRVAdapter(Context context, List<Comment> WallCommentsList) {
-        this.context = context;
-        this.wallCommentsList = WallCommentsList;
 
+        this.context = context;
+        if(WallCommentsList!=null);
+        this.wallCommentsList.addAll(WallCommentsList.subList(0,10));
 
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_comment, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_top_comment, viewGroup, false);
 
 
         return new ViewHolder(view, viewGroup.getContext());
@@ -51,14 +56,20 @@ public class TopCommentsOfDayRVAdapter extends RecyclerView.Adapter<TopCommentsO
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
 
+        List<String> listLinks = new ArrayList<>();
+                listLinks.addAll(LinkUrlSearchHelper.extractUrls(wallCommentsList.get(i).getText()));
 
         viewHolder.commentText.setText(" " + wallCommentsList.get(i).getText());
-        //viewHolder.commentatorName.setText(" " + wallCommentsList.get(i).getUsername());
+
+
+        viewHolder.commentatorName.setText(" ");
         viewHolder.likesAmount.setText(" " + wallCommentsList.get(i).getLikes().getCount());
         viewHolder.postDate.setText(" " + UnixConverter.convertToString(wallCommentsList.get(i).getDate()));
 
-
-        //  loadPhotoToView(viewHolder, i);
+        if(listLinks.size()>0)
+            Picasso.with(context).load(listLinks.get(0)
+                    ).placeholder(R.drawable.lentach_placeholder).error(R.drawable.lentach_placeholder).into(viewHolder.postImage);
+        addClickableLinkToText(viewHolder);
 
                    /* else {
 
@@ -86,6 +97,12 @@ public class TopCommentsOfDayRVAdapter extends RecyclerView.Adapter<TopCommentsO
 
     }
 
+    private void addClickableLinkToText(ViewHolder viewHolder) {
+        viewHolder.commentText.setLinksClickable(true);
+        Pattern httpPattern = Pattern.compile("[a-z]+:\\/\\/[^ \\n]*");
+        Linkify.addLinks(viewHolder.commentText, httpPattern,"");
+    }
+
     @Override
     public int getItemCount() {
         return wallCommentsList.size();
@@ -101,8 +118,6 @@ public class TopCommentsOfDayRVAdapter extends RecyclerView.Adapter<TopCommentsO
         TextView likesAmount;
         @Bind(R.id.postImage)
         ImageView postImage;
-        @Bind(R.id.slider)
-        SliderLayout sliderLayout;
         @Bind(R.id.tv_PostDate)
         TextView postDate;
 

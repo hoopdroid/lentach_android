@@ -122,6 +122,7 @@ public class DataService {
             @Override
             public void success(List<Comment> wallComments, Response response) {
 
+                Collections.reverse(wallComments);
                 listener.onRequestCommentsResult(wallComments);
 
             }

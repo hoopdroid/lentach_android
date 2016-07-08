@@ -56,16 +56,17 @@ public class PostsRVAdapter extends RecyclerView.Adapter<PostsRVAdapter.ViewHold
 
         checkAndLoadPhoto(viewHolder, i);
 
-        int a = 5;
-
     }
 
     private void checkAndLoadPhoto(ViewHolder viewHolder, int i) {
         if(postsList.get(i).getAttachments()!=null)
-        if(postsList.get(i).getAttachments().size()>0)
+        if(postsList.get(i).getAttachments().size()>0){
             if(postsList.get(i).getAttachments().get(0).getPhoto()!=null)
                 Picasso.with(context).load(postsList.get(i).getAttachments().get(0).getPhoto().getPhoto604()).placeholder(R.drawable.lentach_placeholder).error(R.drawable.lentach_placeholder)
                         .into(viewHolder.postImage);
+            else viewHolder.postImage.setImageResource(R.drawable.lentach_placeholder);}
+        else
+            viewHolder.postImage.setImageResource(R.drawable.lentach_placeholder);
     }
 
     private void addClickableLinkToText(ViewHolder viewHolder) {

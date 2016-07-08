@@ -1,11 +1,10 @@
 package com.lentach;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,20 +13,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.lentach.adapters.CommentsRVAdapter;
 import com.lentach.adapters.PostsRVAdapter;
+import com.lentach.adapters.TopCommentsOfDayRVAdapter;
 import com.lentach.components.PostsLikeComporator;
+import com.lentach.components.TopCommentsController;
 import com.lentach.data.DataService;
 import com.lentach.db.RealmUtils;
 import com.lentach.models.comment.Comment;
 import com.lentach.models.realm.PostRealmModel;
-import com.lentach.models.wallcomments.WallComment;
 import com.lentach.models.wallpost.Attachment;
 import com.lentach.models.wallpost.Likes;
 import com.lentach.models.wallpost.Photo;
 import com.lentach.models.wallpost.Post;
 import com.lentach.navigator.ActivityNavigator;
-import com.lentach.views.MaterialDrawer;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -46,33 +44,40 @@ import java.util.Collections;
 import java.util.List;
 
 import butterknife.Bind;
-import io.realm.RealmList;
 
 public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.OnRefreshListener {
 
     @Bind(R.id.rv)
     RecyclerView mRecyclerView;
     @Bind(R.id.swipe_refresh)
-    SwipeRefreshLayout swipeRefreshLayout;
+    SwipeRefreshLayout mSwipeRefreshLayout;
     BottomBar mBottomBar;
     @Bind(R.id.toolbar)
-    Toolbar toolbar;
+    Toolbar mToolbar;
+
+    private TopCommentsOfDayRVAdapter mTopCommentsOfDayRVAdapter;
+    private TopCommentsController mTopCommentsController;
+
+    ArrayList<Comment> comments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
 
-        initViewElements(savedInstanceState, toolbar);
+        mTopCommentsController = new TopCommentsController();
+
+        initViewElements(savedInstanceState, mToolbar);
 
         getNewPostsData(MainActivity.this);
+        getCommentsOfDay();
 
     }
 
     protected void getNewPostsData(final Activity activity) {
-        toolbar.setTitle(getResources().getString(R.string.app_name));
-        swipeRefreshLayout.setRefreshing(true);
+        mToolbar.setTitle(getResources().getString(R.string.app_name));
+        mSwipeRefreshLayout.setRefreshing(true);
         mBottomBar.setVisibility(View.VISIBLE);
         DataService.init().getPostsFromWall(activity,new DataService.onRequestResult() {
             @Override
@@ -84,7 +89,7 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
 
                 updateRecyclerView(1);
                 mRecyclerView.setAdapter(mArtistsRVAdapter);
-                swipeRefreshLayout.setRefreshing(false);
+                mSwipeRefreshLayout.setRefreshing(false);
             }
 
 
@@ -97,26 +102,32 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
             int a = 5;
             @Override
             public void onRequestCommentsResult(List<Comment> wallComments) {
-                ArrayList<Comment> comments = new ArrayList<Comment>();
+                comments = new ArrayList<Comment>();
                 comments.addAll(wallComments);
-                //  CommentsRVAdapter mCommentsRVAdapter = new CommentsRVAdapter(getApplicationContext(),
-                //       wallComments);
-                //updateRecyclerView(1);
-                //mRecyclerView.setAdapter(mCommentsRVAdapter);
 
-                int a  =5;
-                swipeRefreshLayout.setRefreshing(false);
+                mTopCommentsController.setArtistsList(comments);
 
-                toolbar.setTitle("Комментарии дня");
-                mBottomBar.setVisibility(View.GONE);
+                mTopCommentsOfDayRVAdapter = new TopCommentsOfDayRVAdapter(getApplicationContext(),
+                        comments);
+
             }
+
 
 
 
         });
 
+    }
 
-        int a =5;
+    private void updateView(String header, boolean isBottom) {
+        mSwipeRefreshLayout.setRefreshing(false);
+        mToolbar.setTitle(header);
+        if(!isBottom)
+        mBottomBar.setVisibility(View.GONE);
+        else
+        mBottomBar.setVisibility(View.VISIBLE);
+        mRecyclerView.setAdapter(mTopCommentsOfDayRVAdapter);
+        updateRecyclerView(1);
     }
 
     protected void getFavorites(){
@@ -147,23 +158,23 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
 
         updateRecyclerView(2);
         mRecyclerView.setAdapter(mArtistsRVAdapter);
-        swipeRefreshLayout.setRefreshing(false);
+        mSwipeRefreshLayout.setRefreshing(false);
 
-        toolbar.setTitle("Избранное");
+        mToolbar.setTitle("Избранное");
         mBottomBar.setVisibility(View.GONE);
 
         int a =5;
     }
 
-    private void updateRecyclerView(int span) {
+    public void updateRecyclerView(int span) {
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, span);
         mRecyclerView.setLayoutManager(layoutManager);
 
     }
 
     private void getHotPostsData() {
-        toolbar.setTitle(getResources().getString(R.string.app_name));
-        swipeRefreshLayout.setRefreshing(true);
+        mToolbar.setTitle(getResources().getString(R.string.app_name));
+        mSwipeRefreshLayout.setRefreshing(true);
         mBottomBar.setVisibility(View.VISIBLE);
         DataService.init().getPostsFromWall(MainActivity.this,new DataService.onRequestResult() {
             @Override
@@ -176,7 +187,7 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
                         posts);
 
                 mRecyclerView.setAdapter(mArtistsRVAdapter);
-                swipeRefreshLayout.setRefreshing(false);
+                mSwipeRefreshLayout.setRefreshing(false);
             }
 
 
@@ -191,7 +202,7 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 1);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        swipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
 
 
         mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.coordinatorLayout),
@@ -219,10 +230,8 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
                 }
             }
         });
+        mBottomBar.mapColorForTab(1, ContextCompat.getColor(this,R.color.accent));
 
-        // Setting colors for different tabs when there's more than three of them.
-        // You can set colors for tabs in three different ways as shown below.
-        mBottomBar.setActiveTabColor(R.color.accent);
     }
 
     @Override
@@ -262,15 +271,15 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
             getNewPostsData(MainActivity.this);
         if(mBottomBar.getCurrentTabPosition()==1)
             getHotPostsData();
-        swipeRefreshLayout.setRefreshing(true);
+        mSwipeRefreshLayout.setRefreshing(true);
     }
 
 
     public void initDrawer(android.support.v7.widget.Toolbar toolbar, final Activity activity) {
 
-        PrimaryDrawerItem itemHome = new PrimaryDrawerItem().withName("Главная").withIcon(R.drawable.ic_heart_grey600_24dp);
+        PrimaryDrawerItem itemHome = new PrimaryDrawerItem().withName("Главная").withIcon(R.drawable.ic_home_grey600_24dp);
         PrimaryDrawerItem itemHotPosts = new PrimaryDrawerItem().withName("Избранное").withIcon(R.drawable.ic_star_grey600_24dp);
-        PrimaryDrawerItem itemBestComments = new PrimaryDrawerItem().withName("Комментарии дня").withIcon(R.drawable.ic_comment_alert_grey600_24dp);
+        PrimaryDrawerItem itemBestComments = new PrimaryDrawerItem().withName("Комментарии дня").withIcon(R.drawable.ic_comment_account_grey600_24dp);
         PrimaryDrawerItem itemRadio = new PrimaryDrawerItem().withName("#РадиоЛентач").withIcon(R.drawable.ic_bookmark_music_grey600_24dp);
         PrimaryDrawerItem itemSettings = new PrimaryDrawerItem().withName("Настройки").withIcon(R.drawable.ic_settings_grey600_24dp);
 
@@ -283,7 +292,7 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
                 .withActivity(this)
                 .withHeaderBackground(R.color.primary)
                 .addProfiles(
-                        new ProfileDrawerItem().withName(username).withIcon(getResources().getDrawable(R.drawable.ic_account_white_48dp))
+                        new ProfileDrawerItem().withName(username).withIcon(getResources().getDrawable(R.drawable.ic_account_circle_white_48dp))
                 )
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
@@ -316,7 +325,7 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
                                 getNewPostsData(activity);
                                 break;
                             case 3:
-                                getCommentsOfDay();
+                                updateView("Комментарии дня",false);
                                 break;
                             case 2:
                                 getFavorites();

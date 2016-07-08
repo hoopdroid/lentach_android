@@ -17,8 +17,13 @@ public class LinkUrlSearchHelper {
     public static List<String> extractUrls(String text)
     {
         List<String> containedUrls = new ArrayList<String>();
-        String urlRegex = "((https?|ftp|gopher|telnet|file):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)";
-        Pattern pattern = Pattern.compile(urlRegex, Pattern.CASE_INSENSITIVE);
+
+
+        Pattern pattern = Pattern.compile(
+                "(?:^|[\\W])((ht|f)tp(s?):\\/\\/|www\\.)"
+                        + "(([\\w\\-]+\\.){1,}?([\\w\\-.~]+\\/?)*"
+                        + "[\\p{Alnum}.,%_=?&#\\-+()\\[\\]\\*$~@!:/{};']*)",
+                Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
         Matcher urlMatcher = pattern.matcher(text);
 
         while (urlMatcher.find())

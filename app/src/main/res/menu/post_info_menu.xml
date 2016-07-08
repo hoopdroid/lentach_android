@@ -1,6 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
+    <item
+        android:id="@+id/vk_link"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_vk_circle_white_24dp"
+        android:title="vk"
+        app:showAsAction="always"
+        android:visible="true" />
 
     <item
         android:id="@+id/star"

@@ -107,7 +107,8 @@ public class CommentsRVAdapter extends RecyclerView.Adapter<CommentsRVAdapter.Vi
                     if (wallCommentsList.get(i).getAttachments().get(j).getType().equals("photo"))
                         Picasso.with(context).load(wallCommentsList.get(i).getAttachments().get(j).getPhoto().
                                 getPhoto604()).placeholder(R.drawable.lentach_placeholder).error(R.drawable.lentach_placeholder).into(viewHolder.postImage);
-
+                    else
+                        viewHolder.postImage.setImageResource(R.drawable.lentach_placeholder);
                 }
                 viewHolder.sliderLayout.setVisibility(GONE);
             }
@@ -161,6 +162,7 @@ public class CommentsRVAdapter extends RecyclerView.Adapter<CommentsRVAdapter.Vi
                 if(wallCommentsList.get(getPosition()).getAttachments().get(i).getPhoto()!=null)
                     photoAttach = i;
             }
+            if (wallCommentsList.get(getPosition()).getAttachments().get(photoAttach).getPhoto()!=null)
             ActivityNavigator.startPhotoActivity(context,wallCommentsList.get(getPosition()).getAttachments().get(photoAttach).getPhoto().getPhoto604());
         }
     }

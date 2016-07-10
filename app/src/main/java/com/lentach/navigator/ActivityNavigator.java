@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.view.View;
 
+import com.lentach.ChatActivity;
 import com.lentach.MainActivity;
 import com.lentach.PhotoViewActivity;
 import com.lentach.PostActivity;
@@ -52,6 +53,10 @@ public class ActivityNavigator {
     }
     public static void startVKPermissionActivity(Context context){
         Intent intent = new Intent(context, VKPermissionsActivity.class);
+        context.startActivity(intent);
+    }
+    public static void startChatActivity(Context context){
+        Intent intent = new Intent(context, ChatActivity.class);
         context.startActivity(intent);
     }
 

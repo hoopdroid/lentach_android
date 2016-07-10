@@ -280,7 +280,7 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
         PrimaryDrawerItem itemHome = new PrimaryDrawerItem().withName("Главная").withIcon(R.drawable.ic_home_grey600_24dp);
         PrimaryDrawerItem itemHotPosts = new PrimaryDrawerItem().withName("Избранное").withIcon(R.drawable.ic_star_grey600_24dp);
         PrimaryDrawerItem itemBestComments = new PrimaryDrawerItem().withName("Комментарии дня").withIcon(R.drawable.ic_comment_account_grey600_24dp);
-        PrimaryDrawerItem itemRadio = new PrimaryDrawerItem().withName("#РадиоЛентач").withIcon(R.drawable.ic_bookmark_music_grey600_24dp);
+        PrimaryDrawerItem itemChat = new PrimaryDrawerItem().withName("ЛентаЧАТ").withIcon(R.drawable.ic_comment_alert_grey600_24dp);
         PrimaryDrawerItem itemSettings = new PrimaryDrawerItem().withName("Настройки").withIcon(R.drawable.ic_settings_grey600_24dp);
 
         AccountHeader headerResult;
@@ -312,7 +312,7 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
                         itemHome,
                         itemHotPosts,
                         itemBestComments,
-                        itemRadio,
+                        itemChat,
                         new DividerDrawerItem(),
                         itemSettings
                 )
@@ -329,6 +329,9 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
                                 break;
                             case 2:
                                 getFavorites();
+                                break;
+                            case 4:
+                                ActivityNavigator.startChatActivity(activity);
                                 break;
                             case 6:
                                 ActivityNavigator.startVKPermissionActivity(activity);

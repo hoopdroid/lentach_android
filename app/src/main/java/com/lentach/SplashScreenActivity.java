@@ -41,6 +41,7 @@ public class SplashScreenActivity extends BaseActivity {
             public void onFinish() {
 
                 countDownTimer.cancel();
+                SplashScreenActivity.this.finish();
                 ActivityNavigator.startMainActivity(getApplicationContext());
 
             }

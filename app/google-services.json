@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "629392815899",
+    "firebase_url": "https://lentach-cfd27.firebaseio.com",
+    "project_id": "lentach-cfd27",
+    "storage_bucket": "lentach-cfd27.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:629392815899:android:9a46b47cb04603b9",
+        "android_client_info": {
+          "package_name": "com.lentach"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "629392815899-a8qfdfqmv5gmk2l49onv2t00shaoig16.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lentach",
+            "certificate_hash": "65A8D4288E57B0DC118A4409FA1A13B5C516AF63"
+          }
+        },
+        {
+          "client_id": "629392815899-8gfe9n7jua46ii2lb64tkd7tqmsh8qkl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIjm4Tn1LK8dZsIpJa6_uo3EmSEJHtpNk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "629392815899-8gfe9n7jua46ii2lb64tkd7tqmsh8qkl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

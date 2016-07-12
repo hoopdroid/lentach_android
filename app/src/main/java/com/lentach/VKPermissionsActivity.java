@@ -6,11 +6,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.lentach.data.vkApi.VkApiRequestUtil;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
+import com.vk.sdk.api.VKApiConst;
 import com.vk.sdk.api.VKError;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class VKPermissionsActivity extends AppCompatActivity {
 
@@ -27,10 +31,11 @@ public class VKPermissionsActivity extends AppCompatActivity {
             @Override
             public void onResult(VKAccessToken res) {
 // Пользователь успешно авторизовался
-                SharedPreferences sPref = getPreferences(MODE_PRIVATE);
+                SharedPreferences sPref = getSharedPreferences("Default",MODE_PRIVATE);
                 SharedPreferences.Editor ed = sPref.edit();
-                ed.putString("VKAccessToken", res.accessToken);
+                ed.putString(VKApiConst.ACCESS_TOKEN, res.accessToken);
                 ed.apply();
+               // VkApiRequestUtil.getUserInfo(VKPermissionsActivity.this);
                 Toast.makeText(VKPermissionsActivity.this, "Token is "+res.accessToken, Toast.LENGTH_SHORT).show();
 
               //  finishActivity(1);

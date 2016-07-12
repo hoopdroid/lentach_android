@@ -18,14 +18,16 @@ import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
-import com.daimajia.slider.library.SliderTypes.TextSliderView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.lentach.adapters.TabPagerAdapter;
 import com.lentach.components.Constants;
-import com.lentach.data.DataService;
+import com.lentach.data.vkApi.DataService;
+import com.lentach.data.vkApi.VkApiRequestUtil;
 import com.lentach.db.RealmUtils;
-import com.lentach.models.realm.PostRealmModel;
 import com.lentach.models.wallcomments.WallComment;
 import com.lentach.models.wallcomments.users.User;
+import com.lentach.models.wallpost.Likes;
 import com.lentach.models.wallpost.Post;
 import com.lentach.navigator.ActivityNavigator;
 import com.squareup.picasso.Picasso;
@@ -35,7 +37,9 @@ import com.vk.sdk.api.VKError;
 import com.vk.sdk.api.VKParameters;
 import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.VKResponse;
-import com.vk.sdk.api.methods.VKApiWall;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +66,7 @@ public class PostActivity extends BaseActivity {
     TabLayout mTabLayout;
 
     DefaultSliderView textSliderView;
-
+    boolean isPostLikedByUser = false;
 
     private Post mPost;
     private ArrayList<WallComment> mWallComments = new ArrayList<>();
@@ -77,7 +81,27 @@ public class PostActivity extends BaseActivity {
         getCommentsData();
 
         initViewElements();
+        SharedPreferences sharedPreferences  = getSharedPreferences("Default",MODE_PRIVATE);
+        int user = sharedPreferences.getInt(VKApiConst.USER_ID,0);
+        int c =5;
+        String userIdString = "";
+        if(VKAccessToken.currentToken()!=null)
+        userIdString = VKAccessToken.currentToken().userId;
+        VkApiRequestUtil.init().isPostLiked(new VkApiRequestUtil.onIsLikedResult() {
+            @Override
+            public void onIsLikedResult(boolean isLiked) {
 
+                isPostLikedByUser = isLiked;
+
+                if(isLiked)
+                {
+                    fab.setImageResource(R.drawable.ic_heart_white_24dp);
+                }
+                else
+                    fab.setImageResource(R.drawable.ic_heart_outline_white_24dp);
+
+            }
+        },this,mPost.getId(), Integer.parseInt(userIdString));
 
 
     }
@@ -153,6 +177,28 @@ public class PostActivity extends BaseActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if(!isPostLikedByUser){
+                    VkApiRequestUtil.init().addLikeToPost(getApplicationContext(), new VkApiRequestUtil.onAddLikesResult() {
+                            @Override
+                            public void onAddLikesResult(int likesCount) {
+                                fab.setImageResource(R.drawable.ic_heart_white_24dp);
+                            }
+                        },mPost.getId()
+                );}
+
+                else {
+
+                    VkApiRequestUtil.init().deleteLikeFromPost(getApplicationContext(), new VkApiRequestUtil.onAddLikesResult() {
+                                @Override
+                                public void onAddLikesResult(int likesCount) {
+                                    fab.setImageResource(R.drawable.ic_heart_outline_white_24dp);
+                                }
+                            },mPost.getId()
+                    );
+
+                }
+
 
 
             }

@@ -1,14 +1,13 @@
-package com.lentach.data;
+package com.lentach.data.vkApi;
 
 import android.content.Context;
 import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lentach.R;
-import com.lentach.components.CommentsComporator;
 import com.lentach.components.IDCommentsComporator;
 import com.lentach.components.IDUsersComporator;
-import com.lentach.data.api.APIManager;
+import com.lentach.data.serverApi.APIManager;
 import com.lentach.models.comment.Comment;
 import com.lentach.models.wallcomments.WallComment;
 import com.lentach.models.wallcomments.users.User;
@@ -23,7 +22,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import retrofit.Callback;

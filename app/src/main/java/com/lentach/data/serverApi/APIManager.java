@@ -1,4 +1,4 @@
-package com.lentach.data.api;
+package com.lentach.data.serverApi;
 
 import com.lentach.models.comment.Comment;
 

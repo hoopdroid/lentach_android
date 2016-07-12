@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "629392815899-a8qfdfqmv5gmk2l49onv2t00shaoig16.apps.googleusercontent.com",
+          "client_id": "629392815899-03r5re3t0ls68h6k24mcvf9badpirvcc.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.lentach",
-            "certificate_hash": "65A8D4288E57B0DC118A4409FA1A13B5C516AF63"
+            "certificate_hash": "F007EDDB2EF5795C883436946A9B6738ECC822BC"
           }
         },
         {

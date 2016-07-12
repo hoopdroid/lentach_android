@@ -7,7 +7,7 @@ public class FormatUtil {
 
     public static  String  formatPostText(String text){
 
-        text = text.replace("\n", "").replace("\r", "");
+        text = text.replace("\n", " ").replace("\r", " ");
 
         if (text.length()<= Constants.POST_TEXT_LENGTH)
             return text;

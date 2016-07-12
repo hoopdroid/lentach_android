@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
+import com.github.curioustechizen.ago.RelativeTimeTextView;
 import com.lentach.R;
 import com.lentach.components.CommentsComporator;
 import com.lentach.components.Constants;
@@ -65,8 +66,7 @@ public class CommentsRVAdapter extends RecyclerView.Adapter<CommentsRVAdapter.Vi
         viewHolder.commentText.setText(" " + wallCommentsList.get(i).getText());
         viewHolder.commentatorName.setText(" " + wallCommentsList.get(i).getUsername());
         viewHolder.likesAmount.setText(" " + wallCommentsList.get(i).getLikes().getCount());
-        viewHolder.postDate.setText(" " + UnixConverter.convertToString(wallCommentsList.get(i).getDate()));
-
+        viewHolder.postDate.setReferenceTime(wallCommentsList.get(i).getDate()*1000L);
 
         loadPhotoToView(viewHolder, i);
 
@@ -132,7 +132,7 @@ public class CommentsRVAdapter extends RecyclerView.Adapter<CommentsRVAdapter.Vi
         @Bind(R.id.slider)
         SliderLayout sliderLayout;
         @Bind(R.id.tv_PostDate)
-        TextView postDate;
+        RelativeTimeTextView postDate;
 
         protected Context context;
 

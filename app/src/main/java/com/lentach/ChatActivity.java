@@ -137,7 +137,6 @@ public class ChatActivity extends BaseActivity
             public void afterTextChanged(Editable editable) {
             }
         });
-
         mSendButton = (Button) findViewById(R.id.sendButton);
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,7 +156,8 @@ public class ChatActivity extends BaseActivity
                 ChatMessage.class,
                 R.layout.chat_message,
                 FirechatMsgViewHolder.class,
-                mSimpleFirechatDatabaseReference.child("messages")) {
+                mSimpleFirechatDatabaseReference.child("messages"))
+                {
 
             @Override
             protected void populateViewHolder(FirechatMsgViewHolder viewHolder,

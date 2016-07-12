@@ -1,6 +1,9 @@
 package com.lentach;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.CoordinatorLayout;
@@ -8,16 +11,19 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.lentach.adapters.PostsRVAdapter;
 import com.lentach.adapters.TopCommentsOfDayRVAdapter;
 import com.lentach.components.PostsLikeComporator;
 import com.lentach.components.TopCommentsController;
-import com.lentach.data.DataService;
+import com.lentach.data.vkApi.DataService;
+import com.lentach.data.vkApi.VkApiRequestUtil;
 import com.lentach.db.RealmUtils;
 import com.lentach.models.comment.Comment;
 import com.lentach.models.realm.PostRealmModel;
@@ -26,6 +32,8 @@ import com.lentach.models.wallpost.Likes;
 import com.lentach.models.wallpost.Photo;
 import com.lentach.models.wallpost.Post;
 import com.lentach.navigator.ActivityNavigator;
+import com.lentach.util.ScreenOrientationHelper;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -33,11 +41,16 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
+import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader;
+import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnMenuTabClickListener;
+import com.squareup.picasso.Picasso;
 import com.vk.sdk.VKAccessToken;
+import com.vk.sdk.api.VKApiConst;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,7 +84,9 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
         initViewElements(savedInstanceState, mToolbar);
 
         getNewPostsData(MainActivity.this);
-        getCommentsOfDay();
+        VkApiRequestUtil.getUserInfo(this);
+
+
 
     }
 
@@ -167,8 +182,16 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
     }
 
     public void updateRecyclerView(int span) {
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, span);
-        mRecyclerView.setLayoutManager(layoutManager);
+        RecyclerView.LayoutManager layoutManager=null;
+        RecyclerView.LayoutManager stagManager=null;
+
+        if(ScreenOrientationHelper.getScreenOrientation(MainActivity.this)==1) {
+            layoutManager = new GridLayoutManager(this, span);
+            mRecyclerView.setLayoutManager(layoutManager);
+        }
+        else{
+            stagManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+            mRecyclerView.setLayoutManager(stagManager);}
 
     }
 
@@ -207,7 +230,9 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
 
         mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.coordinatorLayout),
                 findViewById(R.id.rv), savedInstanceState);
+        mBottomBar.noTabletGoodness();
         mBottomBar.setItems(R.menu.bottom_menu);
+
         mBottomBar.setOnMenuTabClickListener(new OnMenuTabClickListener() {
             @Override
             public void onMenuTabSelected(@IdRes int menuItemId) {
@@ -285,18 +310,37 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
 
         AccountHeader headerResult;
         String username="Юзер Лентача";
+        SharedPreferences sharedPreferences  = getSharedPreferences("Default",MODE_PRIVATE);
         if(VKAccessToken.currentToken()!=null)
-            username = VKAccessToken.currentToken().email;
+            username = sharedPreferences.getString("first_name","Юзер")+" "+sharedPreferences.getString("last_name","Лентача");
+
+        //initialize and create the image loader logic
+        DrawerImageLoader.init(new AbstractDrawerImageLoader() {
+            @Override
+            public void set(ImageView imageView, Uri uri, Drawable placeholder) {
+                Picasso.with(imageView.getContext()).load(uri).placeholder(placeholder).into(imageView);
+            }
+
+            @Override
+            public void cancel(ImageView imageView) {
+                Picasso.with(imageView.getContext()).cancelRequest(imageView);
+            }
+        });
 
         headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.color.primary)
                 .addProfiles(
-                        new ProfileDrawerItem().withName(username).withIcon(getResources().getDrawable(R.drawable.ic_account_circle_white_48dp))
+                        new ProfileDrawerItem().withName(username).withIcon(sharedPreferences.getString("avatar_image","")),
+                        new ProfileSettingDrawerItem().withName("Настройки пользователя").withIcon
+                         (R.drawable.settings).withIdentifier(1000)
                 )
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
                     public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
+
+                        if(profile.getIdentifier() == 1000)
+                            ActivityNavigator.startVKPermissionActivity(MainActivity.this);
 
                         return false;
                     }
@@ -307,6 +351,8 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
         Drawer result = new DrawerBuilder()
                 .withActivity(activity)
                 .withToolbar(toolbar)
+                .withDisplayBelowStatusBar(false)
+                .withTranslucentStatusBar(false)
                 .withAccountHeader(headerResult)
                 .addDrawerItems(
                         itemHome,
@@ -341,6 +387,10 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
                     }
                 })
                 .build();
+
+
+
+
     }
 
 

@@ -21,6 +21,4 @@ public class BaseActivity extends AppCompatActivity {
         realm = Realm.getDefaultInstance();
     }
 
-
-
 }

@@ -3,7 +3,6 @@ package com.lentach.fragments;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,11 +13,10 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.lentach.PostActivity;
 import com.lentach.R;
 import com.lentach.adapters.CommentsRVAdapter;
 import com.lentach.components.CommentsComporator;
-import com.lentach.data.DataService;
+import com.lentach.data.vkApi.DataService;
 import com.lentach.models.wallcomments.WallComment;
 import com.lentach.models.wallcomments.users.User;
 import com.lentach.navigator.ActivityNavigator;
@@ -33,7 +31,6 @@ import com.vk.sdk.api.methods.VKApiWall;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -138,6 +135,7 @@ public class PostCommentsFragment extends BaseFragment implements SwipeRefreshLa
         if(mEditTextComment.getText()!=null)
             commentText = mEditTextComment.getText().toString();
         else Toast.makeText(getActivity(), "Enter comment message!", Toast.LENGTH_SHORT).show();
+
         VKRequest createComment = new VKApiWall().addComment(VKParameters.from(VKApiConst.OWNER_ID,-29534144,VKApiConst.POST_ID,postId,VKApiConst.MESSAGE,commentText,VKApiConst.ACCESS_TOKEN,token));
         createComment.executeWithListener(new VKRequest.VKRequestListener() {
             @Override

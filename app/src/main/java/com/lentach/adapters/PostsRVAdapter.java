@@ -4,6 +4,7 @@ package com.lentach.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,12 +12,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.curioustechizen.ago.RelativeTimeTextView;
 import com.lentach.R;
 import com.lentach.models.wallpost.Post;
 import com.lentach.navigator.ActivityNavigator;
 import com.lentach.util.FormatUtil;
 import com.lentach.util.UnixConverter;
+import com.like.LikeButton;
 import com.squareup.picasso.Picasso;
+import com.varunest.sparkbutton.SparkButton;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -50,8 +54,7 @@ public class PostsRVAdapter extends RecyclerView.Adapter<PostsRVAdapter.ViewHold
 
         viewHolder.likesAmountText.setText(" "+postsList.get(i).getLikes().getCount());
         viewHolder.postText.setText(FormatUtil.formatPostText(postsList.get(i).getText()));
-        viewHolder.postDateText.setText(" " + UnixConverter.convertToString(postsList.get(i).getDate()));
-
+        viewHolder.postDateText.setReferenceTime(postsList.get(i).getDate()*1000L);
         addClickableLinkToText(viewHolder);
 
         checkAndLoadPhoto(viewHolder, i);
@@ -94,10 +97,8 @@ public class PostsRVAdapter extends RecyclerView.Adapter<PostsRVAdapter.ViewHold
         TextView postText;
         @Bind(R.id.img_post)
         ImageView postImage;
-        @Bind(R.id.iv_Like)
-        ImageView likeImage;
-        @Bind(R.id.tv_PostDate)
-        TextView postDateText;
+        @Bind(R.id.timestamp)
+        RelativeTimeTextView postDateText;
         @Bind(R.id.likesAmount)
         TextView likesAmountText;
 

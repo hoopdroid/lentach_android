@@ -120,6 +120,8 @@ public class TopCommentsOfDayRVAdapter extends RecyclerView.Adapter<TopCommentsO
         ImageView postImage;
         @Bind(R.id.tv_PostDate)
         TextView postDate;
+        @Bind(R.id.tv_toPost)
+        TextView postLink;
 
         protected Context context;
 
@@ -127,7 +129,7 @@ public class TopCommentsOfDayRVAdapter extends RecyclerView.Adapter<TopCommentsO
             super(view);
 
             ButterKnife.bind(this, view);
-            postImage.setOnClickListener(this);
+            postLink.setOnClickListener(this);
             this.context = context;
         }
 
@@ -135,8 +137,9 @@ public class TopCommentsOfDayRVAdapter extends RecyclerView.Adapter<TopCommentsO
         public void onClick(View v) {
 
             switch (v.getId()){
-                case R.id.postImage:
-
+                case R.id.tv_toPost:
+                    int post  = wallCommentsList.get(getPosition()).getUid();
+                    int a =5;
                     break;
             }
 

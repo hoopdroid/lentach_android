@@ -11,7 +11,11 @@ import com.lentach.data.serverApi.APIManager;
 import com.lentach.models.comment.Comment;
 import com.lentach.models.wallcomments.WallComment;
 import com.lentach.models.wallcomments.users.User;
+import com.lentach.models.wallpost.Attachment;
+import com.lentach.models.wallpost.Likes;
+import com.lentach.models.wallpost.Photo;
 import com.lentach.models.wallpost.Post;
+import com.lentach.models.webapipost.WebAPIPost;
 import com.vk.sdk.api.VKApiConst;
 import com.vk.sdk.api.VKError;
 import com.vk.sdk.api.VKParameters;
@@ -113,6 +117,49 @@ public class DataService {
         });
     }
 
+    public void getBestPostsFromServer(final onRequestWebApiResult listener) {
+
+        APIManager.getApiService().getBestPosts(new Callback<List<WebAPIPost>>() {
+            @Override
+            public void success(List<WebAPIPost> posts, Response response) {
+                String s = response.toString();
+                ArrayList<WebAPIPost> webPostsList = new ArrayList();
+                webPostsList.addAll(posts);
+                List<Post> postList  = new ArrayList<Post>();
+                int a =5;
+
+                for (int i = 0; i < webPostsList.size() ; i++) {
+
+                    ArrayList<Attachment> listAttach = new ArrayList<Attachment>();
+                    if(webPostsList.get(i).getAttachment().photo!=null){
+                        Photo photo = new Photo(webPostsList.get(i).getAttachment().photo.srcBig);
+                        Attachment attach = new Attachment("photo",photo);
+                        listAttach.add(attach);
+                    }
+
+                          postList.add(new Post(
+                                  webPostsList.get(i).getId(),
+                                  webPostsList.get(i).getFromId(),
+                                  webPostsList.get(i).getToId(),
+                                  webPostsList.get(i).getPostType(),
+                                  webPostsList.get(i).getDate(),
+                                  webPostsList.get(i).getText(),
+                                  0,
+                                  listAttach,
+                                  new Likes(webPostsList.get(i).getLikes().count)));
+
+                }
+                listener.onRequestWebApiResult(postList);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
+
+
     public void getDataFromServer(final onRequestCommentsOFDayResult listener) {
 
         APIManager.getApiService().getData(new Callback<List<Comment>>() {
@@ -136,6 +183,10 @@ public class DataService {
 
     public static interface onRequestResult {
         public void onRequestResult(List<Post> posts);
+    }
+
+    public static interface onRequestWebApiResult {
+        public void onRequestWebApiResult(List<Post> posts);
     }
 
     public static interface onFavoritesResult {

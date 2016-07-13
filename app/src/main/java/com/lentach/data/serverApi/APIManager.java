@@ -1,6 +1,8 @@
 package com.lentach.data.serverApi;
 
 import com.lentach.models.comment.Comment;
+import com.lentach.models.wallpost.Post;
+import com.lentach.models.webapipost.WebAPIPost;
 
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -21,8 +23,11 @@ public class APIManager {
 
     public interface ApiService {
 
-        @GET("/getBestComment")
+        @GET("/getBestComment/?day=1")
         void getData(Callback<List<Comment>> response);
+
+        @GET("/getTopPost/?count=30")
+        void getBestPosts(Callback<List<WebAPIPost>> response);
 
     }
 
@@ -31,8 +36,6 @@ public class APIManager {
         Executor executor = Executors.newCachedThreadPool();
 
         RestAdapter restAdapter = new RestAdapter.Builder().
-                setExecutors(executor,null).
-                setLogLevel(RestAdapter.LogLevel.FULL).setLog(new AndroidLog("RETROFIT_LOG")).
                 setEndpoint(URL).build();
 
         apiService = restAdapter.create(ApiService.class);

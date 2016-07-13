@@ -33,7 +33,6 @@ import com.lentach.models.wallpost.Photo;
 import com.lentach.models.wallpost.Post;
 import com.lentach.navigator.ActivityNavigator;
 import com.lentach.util.ScreenOrientationHelper;
-import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -50,7 +49,6 @@ import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnMenuTabClickListener;
 import com.squareup.picasso.Picasso;
 import com.vk.sdk.VKAccessToken;
-import com.vk.sdk.api.VKApiConst;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,58 +77,14 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
         setContentView(R.layout.activity_main);
         setSupportActionBar(mToolbar);
 
+        getCommentsOfDay();
+
         mTopCommentsController = new TopCommentsController();
 
         initViewElements(savedInstanceState, mToolbar);
 
         getNewPostsData(MainActivity.this);
         VkApiRequestUtil.getUserInfo(this);
-
-
-
-    }
-
-    protected void getNewPostsData(final Activity activity) {
-        mToolbar.setTitle(getResources().getString(R.string.app_name));
-        mSwipeRefreshLayout.setRefreshing(true);
-        mBottomBar.setVisibility(View.VISIBLE);
-        DataService.init().getPostsFromWall(activity,new DataService.onRequestResult() {
-            @Override
-            public void onRequestResult(List<Post> posts) {
-
-
-                PostsRVAdapter mArtistsRVAdapter = new PostsRVAdapter(activity,
-                        posts);
-
-                updateRecyclerView(1);
-                mRecyclerView.setAdapter(mArtistsRVAdapter);
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-
-
-        });
-    }
-
-    protected void getCommentsOfDay(){
-
-        DataService.init().getDataFromServer(new DataService.onRequestCommentsOFDayResult() {
-            int a = 5;
-            @Override
-            public void onRequestCommentsResult(List<Comment> wallComments) {
-                comments = new ArrayList<Comment>();
-                comments.addAll(wallComments);
-
-                mTopCommentsController.setArtistsList(comments);
-
-                mTopCommentsOfDayRVAdapter = new TopCommentsOfDayRVAdapter(getApplicationContext(),
-                        comments);
-
-            }
-
-
-
-
-        });
 
     }
 
@@ -145,41 +99,20 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
         updateRecyclerView(1);
     }
 
-    protected void getFavorites(){
-
-        ArrayList<PostRealmModel> list = RealmUtils.getAllPostsFromDB(realm);
-        ArrayList<Post> postList = new ArrayList<>();
-
-        for (int i = 0; i < list.size(); i++) {
-
-            ArrayList<Attachment> simpleAttachList = new ArrayList<>();
-            simpleAttachList.add(new Attachment("photo",new Photo(list.get(i).getPhotoAttach())));
-
-            postList.add(new Post(list.get(i).getId(),
-                    list.get(i).getFromId(),
-                    list.get(i).getOwnerId(),
-                    list.get(i).getPostType(),
-                    list.get(i).getDate(),
-                    list.get(i).getText(),
-                    list.get(i).getIsPinned(),
-                    simpleAttachList,
-                    new Likes(list.get(i).getLikes()
-                    )));
-
-        }
-
-        PostsRVAdapter mArtistsRVAdapter = new PostsRVAdapter(getApplicationContext(),
-                postList);
-
-        updateRecyclerView(2);
-        mRecyclerView.setAdapter(mArtistsRVAdapter);
-        mSwipeRefreshLayout.setRefreshing(false);
-
-        mToolbar.setTitle("Избранное");
-        mBottomBar.setVisibility(View.GONE);
-
-        int a =5;
+    private void updateCommentsOfDay(String header, boolean isBottom) {
+        mSwipeRefreshLayout.setRefreshing(true);
+        if(mTopCommentsController.getArtistsList().size()>0){
+        mToolbar.setTitle(header);
+        if(!isBottom)
+            mBottomBar.setVisibility(View.GONE);
+        else
+            mBottomBar.setVisibility(View.VISIBLE);
+        mRecyclerView.setAdapter(mTopCommentsOfDayRVAdapter);
+        updateRecyclerView(1);
+        mSwipeRefreshLayout.setRefreshing(false);}
     }
+
+
 
     public void updateRecyclerView(int span) {
         RecyclerView.LayoutManager layoutManager=null;
@@ -193,28 +126,6 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
             stagManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
             mRecyclerView.setLayoutManager(stagManager);}
 
-    }
-
-    private void getHotPostsData() {
-        mToolbar.setTitle(getResources().getString(R.string.app_name));
-        mSwipeRefreshLayout.setRefreshing(true);
-        mBottomBar.setVisibility(View.VISIBLE);
-        DataService.init().getPostsFromWall(MainActivity.this,new DataService.onRequestResult() {
-            @Override
-            public void onRequestResult(List<Post> posts) {
-
-                Collections.sort(posts,new PostsLikeComporator());
-
-                updateRecyclerView(1);
-                PostsRVAdapter mArtistsRVAdapter = new PostsRVAdapter(getApplicationContext(),
-                        posts);
-
-                mRecyclerView.setAdapter(mArtistsRVAdapter);
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-
-
-        });
     }
 
     private void initViewElements(Bundle savedInstanceState, Toolbar toolbar) {
@@ -240,9 +151,16 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
 
                     getNewPostsData(MainActivity.this);
                 }
-                if (menuItemId == R.id.bottomBarItemTwo) {
+
+                if (menuItemId == R.id.bottomBarItemThree) {
 
                     getHotPostsData();
+
+                }
+
+                if (menuItemId == R.id.bottomBarItemTwo) {
+
+                    getBestPosts(MainActivity.this);
 
                 }
 
@@ -371,7 +289,7 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
                                 getNewPostsData(activity);
                                 break;
                             case 3:
-                                updateView("Комментарии дня",false);
+                                updateCommentsOfDay("Комментарии дня",false);
                                 break;
                             case 2:
                                 getFavorites();
@@ -393,5 +311,123 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
 
     }
 
+    protected void getBestPosts(final Activity activity){
+        mToolbar.setTitle(getResources().getString(R.string.app_name));
+        mSwipeRefreshLayout.setRefreshing(true);
+        DataService.init().getBestPostsFromServer(new DataService.onRequestWebApiResult() {
+            public void onRequestWebApiResult(List<Post> posts) {
+                updateDataInRecycler(posts, activity);
+                //mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
+    }
+
+    private void updateDataInRecycler(List<Post> posts, Activity activity) {
+        Collections.sort(posts,new PostsLikeComporator());
+
+        PostsRVAdapter mArtistsRVAdapter = new PostsRVAdapter(activity,
+                posts);
+
+        mRecyclerView.setAdapter(mArtistsRVAdapter);
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    protected void getFavorites(){
+
+        ArrayList<PostRealmModel> list = RealmUtils.getAllPostsFromDB(realm);
+        ArrayList<Post> postList = new ArrayList<>();
+
+        for (int i = 0; i < list.size(); i++) {
+
+            ArrayList<Attachment> simpleAttachList = new ArrayList<>();
+            simpleAttachList.add(new Attachment("photo",new Photo(list.get(i).getPhotoAttach())));
+
+            postList.add(new Post(list.get(i).getId(),
+                    list.get(i).getFromId(),
+                    list.get(i).getOwnerId(),
+                    list.get(i).getPostType(),
+                    list.get(i).getDate(),
+                    list.get(i).getText(),
+                    list.get(i).getIsPinned(),
+                    simpleAttachList,
+                    new Likes(list.get(i).getLikes()
+                    )));
+
+        }
+
+        PostsRVAdapter mArtistsRVAdapter = new PostsRVAdapter(getApplicationContext(),
+                postList);
+
+        updateRecyclerView(2);
+        mRecyclerView.setAdapter(mArtistsRVAdapter);
+        mSwipeRefreshLayout.setRefreshing(false);
+
+        mToolbar.setTitle("Избранное");
+        mBottomBar.setVisibility(View.GONE);
+
+        int a =5;
+    }
+
+    protected void getCommentsOfDay(){
+
+        mSwipeRefreshLayout.setRefreshing(true);
+        DataService.init().getDataFromServer(new DataService.onRequestCommentsOFDayResult() {
+            int a = 5;
+            @Override
+            public void onRequestCommentsResult(List<Comment> wallComments) {
+                comments = new ArrayList<Comment>();
+                comments.addAll(wallComments);
+
+                mTopCommentsController.setArtistsList(comments);
+
+                mTopCommentsOfDayRVAdapter = new TopCommentsOfDayRVAdapter(getApplicationContext(),
+                        comments);
+                mSwipeRefreshLayout.setRefreshing(false);
+
+            }
+
+        });}
+    protected void getNewPostsData(final Activity activity) {
+        mToolbar.setTitle(getResources().getString(R.string.app_name));
+        mSwipeRefreshLayout.setRefreshing(true);
+        mBottomBar.setVisibility(View.VISIBLE);
+        DataService.init().getPostsFromWall(activity,new DataService.onRequestResult() {
+            @Override
+            public void onRequestResult(List<Post> posts) {
+
+
+                PostsRVAdapter mArtistsRVAdapter = new PostsRVAdapter(activity,
+                        posts);
+
+                updateRecyclerView(1);
+                mRecyclerView.setAdapter(mArtistsRVAdapter);
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+
+
+        });
+    }
+
+    private void getHotPostsData() {
+        mToolbar.setTitle(getResources().getString(R.string.app_name));
+        mSwipeRefreshLayout.setRefreshing(true);
+        mBottomBar.setVisibility(View.VISIBLE);
+        DataService.init().getPostsFromWall(MainActivity.this,new DataService.onRequestResult() {
+            @Override
+            public void onRequestResult(List<Post> posts) {
+
+                Collections.sort(posts,new PostsLikeComporator());
+
+                updateRecyclerView(1);
+                PostsRVAdapter mArtistsRVAdapter = new PostsRVAdapter(getApplicationContext(),
+                        posts);
+
+                mRecyclerView.setAdapter(mArtistsRVAdapter);
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+
+
+        });
+    }
 
 }

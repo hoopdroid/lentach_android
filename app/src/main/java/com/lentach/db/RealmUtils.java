@@ -1,6 +1,9 @@
 package com.lentach.db;
 
-import com.lentach.models.realm.PostRealmModel;
+import com.lentach.db.realmmodel.PostRealmModel;
+import com.lentach.models.wallpost.Attachment;
+import com.lentach.models.wallpost.Likes;
+import com.lentach.models.wallpost.Photo;
 import com.lentach.models.wallpost.Post;
 
 import java.util.ArrayList;
@@ -68,18 +71,35 @@ public class RealmUtils {
             realm.commitTransaction();
             return true;
 
-
-
     }
 
-    public static ArrayList getAllPostsFromDB(Realm realm){
+    public static ArrayList<Post> getAllPostsFromDB(Realm realm){
         RealmResults<PostRealmModel> realmQuery = realm.where(PostRealmModel.class)
                 .findAll();
         RealmList<PostRealmModel> artistsList = new RealmList<PostRealmModel>();
         artistsList.addAll(realmQuery.subList(0, realmQuery.size()));
-        ArrayList<PostRealmModel> arrayList = new ArrayList<>();
-        arrayList.addAll(artistsList);
-        int a = 5;
-        return  arrayList;
+        ArrayList<PostRealmModel> postRealmModelArrayList = new ArrayList<>();
+        postRealmModelArrayList.addAll(artistsList);
+        ArrayList<Post> postList = new ArrayList<>();
+
+        for (int i = 0; i < postRealmModelArrayList.size(); i++) {
+
+            ArrayList<Attachment> simpleAttachList = new ArrayList<>();
+            simpleAttachList.add(new Attachment("photo",new Photo(postRealmModelArrayList.get(i).getPhotoAttach())));
+
+            postList.add(new Post(postRealmModelArrayList.get(i).getId(),
+                    postRealmModelArrayList.get(i).getFromId(),
+                    postRealmModelArrayList.get(i).getOwnerId(),
+                    postRealmModelArrayList.get(i).getPostType(),
+                    postRealmModelArrayList.get(i).getDate(),
+                    postRealmModelArrayList.get(i).getText(),
+                    postRealmModelArrayList.get(i).getIsPinned(),
+                    simpleAttachList,
+                    new Likes(postRealmModelArrayList.get(i).getLikes()
+                    )));
+
+        }
+
+        return postList;
     }
 }

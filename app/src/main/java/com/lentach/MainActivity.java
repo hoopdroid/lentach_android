@@ -22,11 +22,11 @@ import com.lentach.adapters.PostsRVAdapter;
 import com.lentach.adapters.TopCommentsOfDayRVAdapter;
 import com.lentach.components.PostsLikeComporator;
 import com.lentach.components.TopCommentsController;
-import com.lentach.data.vkApi.DataService;
-import com.lentach.data.vkApi.VkApiRequestUtil;
+import com.lentach.data.DataServiceSingleton;
+import com.lentach.data.vkApi.VkApiManager;
 import com.lentach.db.RealmUtils;
 import com.lentach.models.comment.Comment;
-import com.lentach.models.realm.PostRealmModel;
+import com.lentach.db.realmmodel.PostRealmModel;
 import com.lentach.models.wallpost.Attachment;
 import com.lentach.models.wallpost.Likes;
 import com.lentach.models.wallpost.Photo;
@@ -77,14 +77,17 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
         setContentView(R.layout.activity_main);
         setSupportActionBar(mToolbar);
 
+
         getCommentsOfDay();
 
         mTopCommentsController = new TopCommentsController();
 
         initViewElements(savedInstanceState, mToolbar);
+        mSwipeRefreshLayout.setVisibility(View.VISIBLE);
+        mSwipeRefreshLayout.setRefreshing(true);
 
         getNewPostsData(MainActivity.this);
-        VkApiRequestUtil.getUserInfo(this);
+        VkApiManager.getUserInfo(this);
 
     }
 
@@ -306,15 +309,12 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
                 })
                 .build();
 
-
-
-
     }
 
     protected void getBestPosts(final Activity activity){
         mToolbar.setTitle(getResources().getString(R.string.app_name));
         mSwipeRefreshLayout.setRefreshing(true);
-        DataService.init().getBestPostsFromServer(new DataService.onRequestWebApiResult() {
+        DataServiceSingleton.init().getBestPostsFromServer(new DataServiceSingleton.onRequestWebApiResult() {
             public void onRequestWebApiResult(List<Post> posts) {
                 updateDataInRecycler(posts, activity);
                 //mSwipeRefreshLayout.setRefreshing(false);
@@ -332,31 +332,11 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
+    //TODO Либо сделать адаптер для модели из Реалма,либо получать из Реалма уж в PostModel
     protected void getFavorites(){
 
-        ArrayList<PostRealmModel> list = RealmUtils.getAllPostsFromDB(realm);
-        ArrayList<Post> postList = new ArrayList<>();
-
-        for (int i = 0; i < list.size(); i++) {
-
-            ArrayList<Attachment> simpleAttachList = new ArrayList<>();
-            simpleAttachList.add(new Attachment("photo",new Photo(list.get(i).getPhotoAttach())));
-
-            postList.add(new Post(list.get(i).getId(),
-                    list.get(i).getFromId(),
-                    list.get(i).getOwnerId(),
-                    list.get(i).getPostType(),
-                    list.get(i).getDate(),
-                    list.get(i).getText(),
-                    list.get(i).getIsPinned(),
-                    simpleAttachList,
-                    new Likes(list.get(i).getLikes()
-                    )));
-
-        }
-
         PostsRVAdapter mArtistsRVAdapter = new PostsRVAdapter(getApplicationContext(),
-                postList);
+                RealmUtils.getAllPostsFromDB(realm));
 
         updateRecyclerView(2);
         mRecyclerView.setAdapter(mArtistsRVAdapter);
@@ -365,13 +345,12 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
         mToolbar.setTitle("Избранное");
         mBottomBar.setVisibility(View.GONE);
 
-        int a =5;
     }
 
     protected void getCommentsOfDay(){
 
         mSwipeRefreshLayout.setRefreshing(true);
-        DataService.init().getDataFromServer(new DataService.onRequestCommentsOFDayResult() {
+        DataServiceSingleton.init().getCommentsOfDayFromServer(new DataServiceSingleton.onRequestCommentsOFDayResult() {
             int a = 5;
             @Override
             public void onRequestCommentsResult(List<Comment> wallComments) {
@@ -391,7 +370,7 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
         mToolbar.setTitle(getResources().getString(R.string.app_name));
         mSwipeRefreshLayout.setRefreshing(true);
         mBottomBar.setVisibility(View.VISIBLE);
-        DataService.init().getPostsFromWall(activity,new DataService.onRequestResult() {
+        DataServiceSingleton.init().getPostsFromWall(activity,new DataServiceSingleton.onRequestResult() {
             @Override
             public void onRequestResult(List<Post> posts) {
 
@@ -402,17 +381,16 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
                 updateRecyclerView(1);
                 mRecyclerView.setAdapter(mArtistsRVAdapter);
                 mSwipeRefreshLayout.setRefreshing(false);
-            }
+                }
 
-
-        });
+        },20);
     }
 
     private void getHotPostsData() {
         mToolbar.setTitle(getResources().getString(R.string.app_name));
         mSwipeRefreshLayout.setRefreshing(true);
         mBottomBar.setVisibility(View.VISIBLE);
-        DataService.init().getPostsFromWall(MainActivity.this,new DataService.onRequestResult() {
+        DataServiceSingleton.init().getPostsFromWall(MainActivity.this,new DataServiceSingleton.onRequestResult() {
             @Override
             public void onRequestResult(List<Post> posts) {
 
@@ -427,7 +405,7 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
             }
 
 
-        });
+        },100);
     }
 
 }

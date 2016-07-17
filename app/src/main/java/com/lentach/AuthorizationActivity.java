@@ -30,8 +30,6 @@ public class AuthorizationActivity extends AppCompatActivity implements
     private FirebaseAuth mFirebaseAuth;
     private GoogleApiClient mGoogleApiClient;
 
-    // Firebase instance variables
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

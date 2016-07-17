@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.lentach.R;
 import com.lentach.adapters.CommentsRVAdapter;
 import com.lentach.components.CommentsComporator;
-import com.lentach.data.vkApi.DataService;
+import com.lentach.data.DataServiceSingleton;
 import com.lentach.models.wallcomments.WallComment;
 import com.lentach.models.wallcomments.users.User;
 import com.lentach.navigator.ActivityNavigator;
@@ -157,17 +157,13 @@ public class PostCommentsFragment extends BaseFragment implements SwipeRefreshLa
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
-
-        //  mCommentsRVAdapter = new CommentsRVAdapter(getApplicationContext(),
-        //          mCommentsList,usersList);
-        //  mRecyclerView.setAdapter(mCommentsRVAdapter);
         swipeRefreshLayout.setOnRefreshListener(this);
     }
 
 
     private void getCommentsData() {
 
-        DataService.init().getCommentsFromServer(getActivity(),new DataService.onRequestCommentsResult() {
+        DataServiceSingleton.init().getCommentsFromWallPost(getActivity(),new DataServiceSingleton.onRequestCommentsResult() {
             @Override
             public void onRequestCommentsResult(List<WallComment> posts, List<User> arr3) {
 
@@ -186,7 +182,7 @@ public class PostCommentsFragment extends BaseFragment implements SwipeRefreshLa
             }
 
 
-        },postId);
+        },postId,10);
 
     }
 

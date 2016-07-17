@@ -11,7 +11,6 @@ import com.google.gson.annotations.SerializedName;
 import com.lentach.models.wallcomments.users.User;
 import com.lentach.models.wallpost.Attachment;
 import com.lentach.models.wallpost.Likes;
-import com.lentach.util.UserNameFromIdSearcher;
 
 
 public class WallComment implements Parcelable {

@@ -59,7 +59,15 @@ public class PostInfoFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View convertView = inflater.inflate(R.layout.fragment_sample, container, false);
+
+        //TODO Сделать анимацию
+        Animation animation = AnimationUtils.loadAnimation(getActivity(),
+                R.anim.up_from_bottom);
+        animation.setStartOffset(800);
+        convertView.startAnimation(animation);
+
         initViewElements(convertView);
+
 
         return convertView;
     }

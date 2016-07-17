@@ -24,28 +24,15 @@
             android:layout_alignParentBottom="false"
             android:layout_alignParentRight="false"/>
 
-        <FrameLayout
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.daimajia.slider.library.SliderLayout
-                android:id="@+id/slider"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scaleType="centerCrop"
-                />
 
             <ImageView
                 android:visibility="gone"
                 android:id="@+id/postImage"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="@dimen/image_post_size"
                 android:fitsSystemWindows="true"
                 />
 
-        </FrameLayout>
 
         <TextView
             android:padding="12dp"

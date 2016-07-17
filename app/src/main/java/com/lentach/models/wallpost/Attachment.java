@@ -4,6 +4,7 @@ package com.lentach.models.wallpost;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.Vibrator;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -20,6 +21,10 @@ public class Attachment implements Parcelable {
     @SerializedName("page")
     @Expose
     private Page page;
+    @SerializedName("video")
+    @Expose
+    private Video video;
+
 
     public Attachment(String type, Photo photo) {
         this.type = type;
@@ -80,11 +85,19 @@ public class Attachment implements Parcelable {
         this.page = page;
     }
 
+    public Video getVideo() {
+        return video;
+    }
+
+    public void setVideo(Video video) {
+        this.video = video;
+    }
 
     protected Attachment(Parcel in) {
         type = in.readString();
         photo = (Photo) in.readValue(Photo.class.getClassLoader());
         page = (Page) in.readValue(Page.class.getClassLoader());
+        video = (Video) in.readValue(Video.class.getClassLoader());
     }
 
     @Override
@@ -97,6 +110,7 @@ public class Attachment implements Parcelable {
         dest.writeString(type);
         dest.writeValue(photo);
         dest.writeValue(page);
+        dest.writeValue(video);
     }
 
     @SuppressWarnings("unused")

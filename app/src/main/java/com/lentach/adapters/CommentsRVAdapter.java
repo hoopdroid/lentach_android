@@ -8,6 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,6 +17,7 @@ import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.github.curioustechizen.ago.RelativeTimeTextView;
+import com.lentach.PostActivity;
 import com.lentach.R;
 import com.lentach.components.CommentsComporator;
 import com.lentach.components.Constants;
@@ -22,7 +25,6 @@ import com.lentach.models.wallcomments.WallComment;
 import com.lentach.models.wallcomments.users.User;
 import com.lentach.navigator.ActivityNavigator;
 import com.lentach.util.UnixConverter;
-import com.lentach.util.UserNameFromIdSearcher;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
@@ -42,6 +44,7 @@ public class CommentsRVAdapter extends RecyclerView.Adapter<CommentsRVAdapter.Vi
 
     private List<WallComment> wallCommentsList;
     private Context context;
+    private int lastPosition = -1;
 
     public CommentsRVAdapter(Context context, List<WallComment> WallCommentsList) {
         this.context = context;
@@ -70,49 +73,27 @@ public class CommentsRVAdapter extends RecyclerView.Adapter<CommentsRVAdapter.Vi
 
         loadPhotoToView(viewHolder, i);
 
-                   /* else {
-
-                    for (int j = 0; j < wallCommentsList.get(i).getAttachments().size(); j++)
-
-                        if (wallCommentsList.get(i).getAttachments().get(j).getType().equals("photo")) {
-                            DefaultSliderView textSliderView = new DefaultSliderView(context);
-                            textSliderView.image(wallCommentsList.get(j).getAttachments().get(j).getPhoto().getPhoto604());
-                            viewHolder.sliderLayout.addSlider(textSliderView);
-
-                        }
-
-
-                    {
-                        viewHolder.sliderLayout.setPresetTransformer(SliderLayout.Transformer.ZoomOutSlide);
-                        viewHolder.sliderLayout.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
-                        viewHolder.sliderLayout.setCustomAnimation(new DescriptionAnimation());
-                        viewHolder.sliderLayout.setDuration(4000);
-
-                    }
-                }
-            }
-            */
-
-
+        Animation animation = AnimationUtils.loadAnimation(context,
+                (i > lastPosition) ? R.anim.up_from_bottom
+                        : R.anim.down_to_top);
+        viewHolder.itemView.startAnimation(animation);
+        lastPosition = i;
 
     }
 
     private void loadPhotoToView(ViewHolder viewHolder, int i) {
-        if (wallCommentsList.get(i).getAttachments() != null)
+        if (wallCommentsList.get(i).getAttachments() != null){
             if (wallCommentsList.get(i).getAttachments().size() > 0) {
+                if(wallCommentsList.get(i).getAttachments().get(0).getPhoto()!=null){
+                    viewHolder.postImage.setVisibility(View.VISIBLE);
+                    Picasso.with(context).load(wallCommentsList.get(i).getAttachments().get(0).getPhoto().getPhoto604()).placeholder(R.drawable.lentach_placeholder).error(R.drawable.lentach_placeholder)
+                            .into(viewHolder.postImage);}
+                else {viewHolder.postImage.setVisibility(View.GONE);};}}
+        else viewHolder.postImage.setVisibility(GONE);
 
-                viewHolder.postImage.setVisibility(View.VISIBLE);
-                for (int j = 0; j < wallCommentsList.get(i).getAttachments().size(); j++) {
 
-                    if (wallCommentsList.get(i).getAttachments().get(j).getType().equals("photo"))
-                        Picasso.with(context).load(wallCommentsList.get(i).getAttachments().get(j).getPhoto().
-                                getPhoto604()).placeholder(R.drawable.lentach_placeholder).error(R.drawable.lentach_placeholder).into(viewHolder.postImage);
-                    else
-                        viewHolder.postImage.setImageResource(R.drawable.lentach_placeholder);
-                }
-                viewHolder.sliderLayout.setVisibility(GONE);
             }
-    }
+
 
     @Override
     public int getItemCount() {
@@ -129,8 +110,6 @@ public class CommentsRVAdapter extends RecyclerView.Adapter<CommentsRVAdapter.Vi
         TextView likesAmount;
         @Bind(R.id.postImage)
         ImageView postImage;
-        @Bind(R.id.slider)
-        SliderLayout sliderLayout;
         @Bind(R.id.tv_PostDate)
         RelativeTimeTextView postDate;
 
@@ -163,7 +142,7 @@ public class CommentsRVAdapter extends RecyclerView.Adapter<CommentsRVAdapter.Vi
                     photoAttach = i;
             }
             if (wallCommentsList.get(getPosition()).getAttachments().get(photoAttach).getPhoto()!=null)
-            ActivityNavigator.startPhotoActivity(context,wallCommentsList.get(getPosition()).getAttachments().get(photoAttach).getPhoto().getPhoto604());
+            ActivityNavigator.startPhotoActivity(context,wallCommentsList.get(getPosition()).getAttachments().get(photoAttach).getPhoto().getPhoto604(),postImage);
         }
     }
 }

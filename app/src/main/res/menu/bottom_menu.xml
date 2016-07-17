@@ -5,6 +5,11 @@
         android:title="Новое" />
     <item
         android:id="@+id/bottomBarItemTwo"
+        android:icon="@drawable/ic_fire_grey600_24dp"
+        android:title="Горячее" />
+
+    <item
+        android:id="@+id/bottomBarItemThree"
         android:icon="@drawable/ic_trophy_variant_grey600_24dp"
         android:title="Лучшее" />
 

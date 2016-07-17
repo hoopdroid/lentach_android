@@ -3,7 +3,6 @@ package com.lentach.navigator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Parcelable;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -23,17 +22,17 @@ import com.lentach.components.Constants;
  */
 public class ActivityNavigator {
 
-    public static void startPostActivity(Activity context, Parcelable parcelable, View imageView) {
+    public static void startPostActivity(Context context, Parcelable parcelable, View imageView) {
 
         Intent intent = new Intent(context, PostActivity.class);
 
         intent.putExtra(Constants.POST_EXTRA, parcelable);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            imageView.setTransitionName(Constants.ARTIST_TRANSITION);
+            imageView.setTransitionName(Constants.IMAGE_TRANSITION);
             Pair<View, String> pair1 = Pair.create(imageView, imageView.getTransitionName());
             ActivityOptionsCompat options = ActivityOptionsCompat.
-                    makeSceneTransitionAnimation(context, pair1);
+                    makeSceneTransitionAnimation((Activity)context, pair1);
             context.startActivity(intent, options.toBundle());
         } else
             context.startActivity(intent);
@@ -41,15 +40,23 @@ public class ActivityNavigator {
 
     public static void startMainActivity(Context context){
         Intent intent = new Intent(context, MainActivity.class);
+        ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeCustomAnimation(context,android.R.anim.fade_in,android.R.anim.fade_out);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+        context.startActivity(intent,optionsCompat.toBundle());
     }
 
-    public static void startPhotoActivity(Context context,String photoUrl){
-        Intent intent = new Intent(context, PhotoViewActivity.class);
+    public static void startPhotoActivity(Context activity,String photoUrl,View imageView){
+        Intent intent = new Intent(activity, PhotoViewActivity.class);
 
         intent.putExtra("Photo",photoUrl);
-        context.startActivity(intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            imageView.setTransitionName(Constants.IMAGE_TRANSITION);
+            Pair<View, String> pair1 = Pair.create(imageView, imageView.getTransitionName());
+            ActivityOptionsCompat options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation((Activity)activity, pair1);
+            activity.startActivity(intent, options.toBundle());
+        } else
+            activity.startActivity(intent);
     }
     public static void startVKPermissionActivity(Context context){
         Intent intent = new Intent(context, VKPermissionsActivity.class);

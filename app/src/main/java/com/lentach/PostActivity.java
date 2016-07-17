@@ -18,28 +18,18 @@ import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.lentach.adapters.TabPagerAdapter;
 import com.lentach.components.Constants;
-import com.lentach.data.vkApi.DataService;
-import com.lentach.data.vkApi.VkApiRequestUtil;
+import com.lentach.data.DataServiceSingleton;
+import com.lentach.data.vkApi.VkApiManager;
 import com.lentach.db.RealmUtils;
 import com.lentach.models.wallcomments.WallComment;
 import com.lentach.models.wallcomments.users.User;
-import com.lentach.models.wallpost.Likes;
 import com.lentach.models.wallpost.Post;
 import com.lentach.navigator.ActivityNavigator;
 import com.squareup.picasso.Picasso;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.api.VKApiConst;
-import com.vk.sdk.api.VKError;
-import com.vk.sdk.api.VKParameters;
-import com.vk.sdk.api.VKRequest;
-import com.vk.sdk.api.VKResponse;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,17 +67,14 @@ public class PostActivity extends BaseActivity {
         setContentView(R.layout.activity_post);
 
         mPost = getIntent().getParcelableExtra(Constants.POST_EXTRA);
-        int  a = 5;
         getCommentsData();
 
         initViewElements();
-        SharedPreferences sharedPreferences  = getSharedPreferences("Default",MODE_PRIVATE);
-        int user = sharedPreferences.getInt(VKApiConst.USER_ID,0);
-        int c =5;
-        String userIdString = "";
+
+        String userIdString = "0";
         if(VKAccessToken.currentToken()!=null)
         userIdString = VKAccessToken.currentToken().userId;
-        VkApiRequestUtil.init().isPostLiked(new VkApiRequestUtil.onIsLikedResult() {
+        VkApiManager.init().isPostLiked(new VkApiManager.onIsLikedResult() {
             @Override
             public void onIsLikedResult(boolean isLiked) {
 
@@ -115,7 +102,7 @@ public class PostActivity extends BaseActivity {
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                //getCommentsData();
+
             }
 
             @Override
@@ -138,17 +125,24 @@ public class PostActivity extends BaseActivity {
     private void initViewElements() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (mPost.getPhotoAmount() == 1) {
+            if (mPost.getAttachments()!=null&&mPost.getAttachments().get(0).getType().equals("photo")) {
+                if (mPost.getPhotoAmount() == 1) {
+                    postImage.setVisibility(View.VISIBLE);
+                    postImage.setTransitionName(Constants.IMAGE_TRANSITION);
+                    Picasso.with(this).load(mPost.getAttachments().get(0).
+                            getPhoto().getPhoto604()).placeholder(R.drawable.lentach_placeholder).
+                            error(R.drawable.lentach_placeholder).into(postImage);
+                    sliderLayout.setVisibility(GONE);
+                } else {
+                    sliderLayout.setTransitionName(Constants.IMAGE_TRANSITION);
+                    initSlider();
+                }
+            } else if (mPost.getAttachments()!=null&&mPost.getAttachments().get(0).getType().equals("video")){
                 postImage.setVisibility(View.VISIBLE);
-                postImage.setTransitionName(Constants.ARTIST_TRANSITION);
                 Picasso.with(this).load(mPost.getAttachments().get(0).
-                        getPhoto().getPhoto604()).placeholder(R.drawable.lentach_placeholder).
+                        getVideo().getPhoto800()).placeholder(R.drawable.lentach_placeholder).
                         error(R.drawable.lentach_placeholder).into(postImage);
-                sliderLayout.setVisibility(GONE);
-            } else {
-                sliderLayout.setTransitionName(Constants.ARTIST_TRANSITION);
-                initSlider();
-            }
+            sliderLayout.setVisibility(GONE);}
         }
         else {
             if (mPost.getPhotoAmount() == 1) {
@@ -179,7 +173,7 @@ public class PostActivity extends BaseActivity {
             public void onClick(View view) {
 
                 if(!isPostLikedByUser){
-                    VkApiRequestUtil.init().addLikeToPost(getApplicationContext(), new VkApiRequestUtil.onAddLikesResult() {
+                    VkApiManager.init().addLikeToPost(getApplicationContext(), new VkApiManager.onAddLikesResult() {
                             @Override
                             public void onAddLikesResult(int likesCount) {
                                 fab.setImageResource(R.drawable.ic_heart_white_24dp);
@@ -189,7 +183,7 @@ public class PostActivity extends BaseActivity {
 
                 else {
 
-                    VkApiRequestUtil.init().deleteLikeFromPost(getApplicationContext(), new VkApiRequestUtil.onAddLikesResult() {
+                    VkApiManager.init().deleteLikeFromPost(getApplicationContext(), new VkApiManager.onAddLikesResult() {
                                 @Override
                                 public void onAddLikesResult(int likesCount) {
                                     fab.setImageResource(R.drawable.ic_heart_outline_white_24dp);
@@ -218,7 +212,7 @@ public class PostActivity extends BaseActivity {
                     @Override
                     public void onSliderClick(BaseSliderView slider) {
 
-                        ActivityNavigator.startPhotoActivity(slider.getContext(),mPost.getAttachments().get(temp).getPhoto().getPhoto604());
+                        ActivityNavigator.startPhotoActivity(PostActivity.this,mPost.getAttachments().get(temp).getPhoto().getPhoto604(),postImage);
                     }
                 });
                 sliderLayout.addSlider(textSliderView);
@@ -242,7 +236,7 @@ public class PostActivity extends BaseActivity {
 
     private void getCommentsData() {
 
-        DataService.init().getCommentsFromServer(PostActivity.this,new DataService.onRequestCommentsResult() {
+        DataServiceSingleton.init().getCommentsFromWallPost(PostActivity.this,new DataServiceSingleton.onRequestCommentsResult() {
             @Override
             public void onRequestCommentsResult(List<WallComment> posts, List<User> arr3) {
                 mWallComments = (ArrayList<WallComment>) posts;
@@ -250,7 +244,7 @@ public class PostActivity extends BaseActivity {
                 initTabs();
             }
 
-        },mPost.getId());
+        },mPost.getId(),20);
 
     }
 
@@ -294,7 +288,16 @@ public class PostActivity extends BaseActivity {
 
     @OnClick(R.id.postImage)
     void startPhoto(View view) {
-        ActivityNavigator.startPhotoActivity(view.getContext(),mPost.getAttachments().get(mPost.getPhotoAmount()-1).getPhoto().getPhoto604());
+        if(mPost.getAttachments().get(0).getType().equals("photo"))
+        ActivityNavigator.startPhotoActivity(PostActivity.this,mPost.getAttachments().get(mPost.getPhotoAmount()-1).getPhoto().getPhoto604(),postImage);
+        else
+        {
+            Intent intent = new Intent(Intent.ACTION_SEARCH);
+            intent.setPackage("com.google.android.youtube");
+            intent.putExtra("query", mPost.getAttachments().get(0).getVideo().getTitle());
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
     }
 
 

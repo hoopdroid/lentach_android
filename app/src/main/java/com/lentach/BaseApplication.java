@@ -35,12 +35,14 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
         vkAccessTokenTracker.startTracking();
         VKSdk.initialize(this);
+
         RealmConfiguration config = new RealmConfiguration.Builder(this).build();
         Realm.setDefaultConfiguration(config);
 
-        //initialize and create the image loader logic
+        //initialize and create the image loader logic for Material Drawer
         DrawerImageLoader.init(new DrawerImageLoader.IDrawerImageLoader() {
             @Override
             public void set(ImageView imageView, Uri uri, Drawable placeholder) {

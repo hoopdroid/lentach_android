@@ -39,7 +39,7 @@ public class TopCommentsOfDayRVAdapter extends RecyclerView.Adapter<TopCommentsO
     public TopCommentsOfDayRVAdapter(Context context, List<Comment> WallCommentsList) {
 
         this.context = context;
-        if(WallCommentsList!=null);
+        if(WallCommentsList!=null&&WallCommentsList.size()>0);
         this.wallCommentsList.addAll(WallCommentsList.subList(0,10));
 
     }
@@ -69,31 +69,8 @@ public class TopCommentsOfDayRVAdapter extends RecyclerView.Adapter<TopCommentsO
         if(listLinks.size()>0)
             Picasso.with(context).load(listLinks.get(0)
                     ).placeholder(R.drawable.lentach_placeholder).error(R.drawable.lentach_placeholder).into(viewHolder.postImage);
+
         addClickableLinkToText(viewHolder);
-
-                   /* else {
-
-                    for (int j = 0; j < wallCommentsList.get(i).getAttachments().size(); j++)
-
-                        if (wallCommentsList.get(i).getAttachments().get(j).getType().equals("photo")) {
-                            DefaultSliderView textSliderView = new DefaultSliderView(context);
-                            textSliderView.image(wallCommentsList.get(j).getAttachments().get(j).getPhoto().getPhoto604());
-                            viewHolder.sliderLayout.addSlider(textSliderView);
-
-                        }
-
-
-                    {
-                        viewHolder.sliderLayout.setPresetTransformer(SliderLayout.Transformer.ZoomOutSlide);
-                        viewHolder.sliderLayout.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
-                        viewHolder.sliderLayout.setCustomAnimation(new DescriptionAnimation());
-                        viewHolder.sliderLayout.setDuration(4000);
-
-                    }
-                }
-            }
-            */
-
 
     }
 
@@ -138,8 +115,7 @@ public class TopCommentsOfDayRVAdapter extends RecyclerView.Adapter<TopCommentsO
 
             switch (v.getId()){
                 case R.id.tv_toPost:
-                    int post  = wallCommentsList.get(getPosition()).getUid();
-                    int a =5;
+                    int post  = wallCommentsList.get(getPosition()).getUid();//TODO Переход из лучшего коммента в Пост
                     break;
             }
 

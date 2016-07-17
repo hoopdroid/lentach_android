@@ -5,7 +5,7 @@ import com.lentach.components.Constants;
 
 public class FormatUtil {
 
-    public static  String  formatPostText(String text){
+    public static  String removeNewLinesFromPostText(String text){
 
         text = text.replace("\n", " ").replace("\r", " ");
 

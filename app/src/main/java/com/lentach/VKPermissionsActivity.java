@@ -19,7 +19,8 @@ public class VKPermissionsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vkpermissions);
-        VKSdk.login(this, VKScope.WALL);
+        String[] scopes = {VKScope.WALL,VKScope.VIDEO};
+        VKSdk.login(this, scopes);
     }
 
     @Override

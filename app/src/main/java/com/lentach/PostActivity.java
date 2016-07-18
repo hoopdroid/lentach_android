@@ -30,6 +30,7 @@ import com.lentach.navigator.ActivityNavigator;
 import com.squareup.picasso.Picasso;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.api.VKApiConst;
+import com.vk.sdk.api.model.VKApiVideo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +92,7 @@ public class PostActivity extends BaseActivity {
         },this,mPost.getId(), Integer.parseInt(userIdString));
 
 
+
     }
 
     private void initTabs() {
@@ -124,37 +126,7 @@ public class PostActivity extends BaseActivity {
 
     private void initViewElements() {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (mPost.getAttachments()!=null&&mPost.getAttachments().get(0).getType().equals("photo")) {
-                if (mPost.getPhotoAmount() == 1) {
-                    postImage.setVisibility(View.VISIBLE);
-                    postImage.setTransitionName(Constants.IMAGE_TRANSITION);
-                    Picasso.with(this).load(mPost.getAttachments().get(0).
-                            getPhoto().getPhoto604()).placeholder(R.drawable.lentach_placeholder).
-                            error(R.drawable.lentach_placeholder).into(postImage);
-                    sliderLayout.setVisibility(GONE);
-                } else {
-                    sliderLayout.setTransitionName(Constants.IMAGE_TRANSITION);
-                    initSlider();
-                }
-            } else if (mPost.getAttachments()!=null&&mPost.getAttachments().get(0).getType().equals("video")){
-                postImage.setVisibility(View.VISIBLE);
-                Picasso.with(this).load(mPost.getAttachments().get(0).
-                        getVideo().getPhoto800()).placeholder(R.drawable.lentach_placeholder).
-                        error(R.drawable.lentach_placeholder).into(postImage);
-            sliderLayout.setVisibility(GONE);}
-        }
-        else {
-            if (mPost.getPhotoAmount() == 1) {
-                postImage.setVisibility(View.VISIBLE);
-                sliderLayout.setVisibility(GONE);
-                Picasso.with(this).load(mPost.getAttachments().get(0).getPhoto().getPhoto604()).
-                        placeholder(R.drawable.lentach_placeholder).
-                        error(R.drawable.lentach_placeholder).into(postImage);
-            } else {
-                initSlider();
-            }
-        }
+        selectTypeAttachmentAndInitView();
 
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
@@ -198,6 +170,55 @@ public class PostActivity extends BaseActivity {
             }
         });
 
+    }
+
+    private void selectTypeAttachmentAndInitView() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (mPost.getAttachments()!=null&&mPost.getAttachments().size()>0)
+                if(mPost.getAttachments().get(0).getType().equals("photo")) {
+                    if (mPost.getPhotoAmount() == 1) {
+                      postImage.setTransitionName(Constants.IMAGE_TRANSITION);
+                      loadPhotoAndDisableSlider();
+                   } else {
+                         sliderLayout.setTransitionName(Constants.IMAGE_TRANSITION);
+                         initSlider();
+                 }
+            }
+                else if (mPost.getAttachments()!=null&&mPost.getAttachments().get(0).getType().equals("video")){
+                loadVideoAndDisableSlider();}
+        }
+        else {
+            if (mPost.getPhotoAmount() == 1) {
+                loadPhotoAndDisableSlider();
+            } else {
+                initSlider();
+            }
+        }
+    }
+
+    private void loadVideoAndDisableSlider() {
+
+
+        DataServiceSingleton.init().getVideoFromId(this, new DataServiceSingleton.onRequestVideoFromId() {
+            @Override
+            public void onRequestVideoFromId(VKApiVideo vkApiVideo) {
+                int a  = 5;
+            }
+        },mPost.getAttachments().get(0).getVideo().getId());
+
+        postImage.setVisibility(View.VISIBLE);
+        Picasso.with(this).load(mPost.getAttachments().get(0).
+                getVideo().getPhoto800()).placeholder(R.drawable.lentach_placeholder).
+                error(R.drawable.lentach_placeholder).into(postImage);
+        sliderLayout.setVisibility(GONE);
+    }
+
+    private void loadPhotoAndDisableSlider() {
+        postImage.setVisibility(View.VISIBLE);
+        Picasso.with(this).load(mPost.getAttachments().get(0).
+                getPhoto().getPhoto604()).placeholder(R.drawable.lentach_placeholder).
+                error(R.drawable.lentach_placeholder).into(postImage);
+        sliderLayout.setVisibility(GONE);
     }
 
     private void initSlider() {

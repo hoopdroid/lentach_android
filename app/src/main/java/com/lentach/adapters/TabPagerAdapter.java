@@ -45,7 +45,11 @@ public class TabPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
+
+        if(mWallComments.size()>0)
         return 2;
+        else
+            return 1;
     }
 
     @Override

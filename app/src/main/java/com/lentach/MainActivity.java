@@ -49,6 +49,7 @@ import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnMenuTabClickListener;
 import com.squareup.picasso.Picasso;
 import com.vk.sdk.VKAccessToken;
+import com.vk.sdk.api.model.VKApiPost;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -155,13 +156,13 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
                     getNewPostsData(MainActivity.this);
                 }
 
-                if (menuItemId == R.id.bottomBarItemThree) {
+                if (menuItemId == R.id.bottomBarItemTwo) {
 
                     getHotPostsData();
 
                 }
 
-                if (menuItemId == R.id.bottomBarItemTwo) {
+                if (menuItemId == R.id.bottomBarItemThree) {
 
                     getBestPosts(MainActivity.this);
 
@@ -383,7 +384,7 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
                 mSwipeRefreshLayout.setRefreshing(false);
                 }
 
-        },20);
+        },100);
     }
 
     private void getHotPostsData() {

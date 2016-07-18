@@ -23,6 +23,8 @@ import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.VKResponse;
 import com.vk.sdk.api.methods.VKApiWall;
 import com.vk.sdk.api.model.VKApiPost;
+import com.vk.sdk.api.model.VKApiVideo;
+import com.vk.sdk.api.model.VKAttachments;
 import com.vk.sdk.api.model.VKList;
 
 import org.json.JSONException;
@@ -58,28 +60,26 @@ public class DataServiceSingleton {
             public void onComplete(VKResponse response) {
                 super.onComplete(response);
 
-                VKList<VKApiPost> videos = new VKList<>(response.json, VKApiPost.class);
-
-                int a = 5;
-
                 Gson gson = new Gson();
+                String s="";
+                JSONObject jsonObject = null;
                 try {
+                    jsonObject = (JSONObject) response.json.get("response");
 
-                    JSONObject jsonObject = (JSONObject) response.json.get("response");
-                    String s = jsonObject.get("items").toString();
+                s = jsonObject.get("items").toString();
+                } catch (JSONException e) {
+                e.printStackTrace();
+                }
                     List<Post> posts= gson.fromJson( s, new TypeToken<ArrayList<Post>>(){}.getType());
                     VKList<VKApiPost> postsApi = new VKList<>(response.json, VKApiPost.class);
 
+
+                    VKAttachments.VKApiAttachment vkAttachment = postsApi.get(0).attachments.get(0);
                     List<VKApiPost> vkApiPosts = new ArrayList<VKApiPost>();
                     vkApiPosts.addAll(postsApi);
 
 
-
                     listener.onRequestResult(posts);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
             }
 
             @Override
@@ -119,6 +119,40 @@ public class DataServiceSingleton {
                     // Передаем пользователей-комментаторов и сами комментарии
                     listener.onRequestCommentsResult(wallComments,usersList);
 
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(VKError error) {
+                super.onError(error);
+                Toast.makeText(context,R.string.network_error_message,Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void getVideoFromId(final Context context, final onRequestVideoFromId  listener, int videoId) {
+
+        VKRequest request1234 = new VKRequest
+                ("video.get",
+                        VKParameters.from(VKApiConst.OWNER_ID,
+                                context.getResources().getInteger(R.integer.group_id),
+                                "videos",context.getResources().getInteger(R.integer.group_id) + "_" + videoId,VKApiConst.EXTENDED,"1"));
+        request1234.executeWithListener(new VKRequest.VKRequestListener() {
+            @Override
+            public void onComplete(VKResponse response) {
+                super.onComplete(response);
+
+                Gson gson = new Gson();
+
+                try {
+                    JSONObject jsonObject = (JSONObject) response.json.get("response");
+                    String s = jsonObject.get("items").toString();
+                    VKList<VKApiVideo> videos = new VKList<>(response.json, VKApiVideo.class);
+
+
+                    listener.onRequestVideoFromId(videos.get(0));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -175,7 +209,7 @@ public class DataServiceSingleton {
 
     public void getCommentsOfDayFromServer(final onRequestCommentsOFDayResult listener) {
 
-        ServerApiManager.getApiService().getData(new Callback<List<Comment>>() {
+        ServerApiManager.getApiService().getBestComments(new Callback<List<Comment>>() {
 
             @Override
             public void success(List<Comment> wallComments, Response response) {
@@ -208,5 +242,8 @@ public class DataServiceSingleton {
     }
     public  interface onRequestCommentsOFDayResult {
         public void onRequestCommentsResult(List<Comment> posts);
+    }
+    public  interface onRequestVideoFromId {
+        public void onRequestVideoFromId (VKApiVideo vkApiVideo);
     }
 }

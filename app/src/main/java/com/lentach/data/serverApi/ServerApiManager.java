@@ -24,7 +24,7 @@ public class ServerApiManager {
     public interface ApiService {
 
         @GET("/getBestComment/?day=1")
-        void getData(Callback<List<Comment>> response);
+        void getBestComments(Callback<List<Comment>> response);
 
         @GET("/getTopPost/?count=30")
         void getBestPosts(Callback<List<WebAPIPost>> response);

@@ -115,7 +115,7 @@ public class TopCommentsOfDayRVAdapter extends RecyclerView.Adapter<TopCommentsO
 
             switch (v.getId()){
                 case R.id.tv_toPost:
-                    int post  = wallCommentsList.get(getPosition()).getUid();//TODO Переход из лучшего коммента в Пост
+                    int post  = wallCommentsList.get(getPosition()).getUid();//TODO ??????? ?? ??????? ???????? ? ????
                     break;
             }
 

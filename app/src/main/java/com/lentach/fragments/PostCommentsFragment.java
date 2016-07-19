@@ -1,6 +1,7 @@
 package com.lentach.fragments;
 
 import android.content.SharedPreferences;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.lentach.R;
@@ -57,11 +60,11 @@ public class PostCommentsFragment extends BaseFragment implements SwipeRefreshLa
     @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.sendCommentBtn)
-    Button mSendCommentBtn;
+    ImageView mSendCommentBtn;
     @Bind(R.id.commentEditText)
     EditText mEditTextComment;
     @Bind(R.id.commentView)
-    LinearLayout commentView;
+    RelativeLayout commentView;
     @Bind(R.id.gotoVkAuthBtn)
     Button mAuthBtn;
 

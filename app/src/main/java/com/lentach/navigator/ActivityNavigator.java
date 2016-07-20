@@ -13,6 +13,7 @@ import com.lentach.ChatActivity;
 import com.lentach.MainActivity;
 import com.lentach.PhotoViewActivity;
 import com.lentach.PostActivity;
+import com.lentach.SettingsActivity;
 import com.lentach.VKPermissionsActivity;
 import com.lentach.components.Constants;
 
@@ -64,6 +65,10 @@ public class ActivityNavigator {
     }
     public static void startChatActivity(Context context){
         Intent intent = new Intent(context, ChatActivity.class);
+        context.startActivity(intent);
+    }
+    public static void startSettingsActivity(Context context){
+        Intent intent = new Intent(context, SettingsActivity.class);
         context.startActivity(intent);
     }
 

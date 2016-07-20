@@ -3,6 +3,8 @@ package com.lentach;
 import android.support.annotation.LayoutRes;
 import android.support.v7.app.AppCompatActivity;
 
+import com.google.android.gms.ads.MobileAds;
+
 import butterknife.ButterKnife;
 import io.realm.Realm;
 
@@ -19,6 +21,8 @@ public class BaseActivity extends AppCompatActivity {
         super.setContentView(layoutResID);
         ButterKnife.bind(this);
         realm = Realm.getDefaultInstance();
+
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-1178779645409927~7230973298");
     }
 
 }

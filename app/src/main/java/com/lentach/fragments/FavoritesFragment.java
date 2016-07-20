@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.lentach.MainActivity;
 import com.lentach.R;
 import com.lentach.adapters.CommentsRVAdapter;
+import com.lentach.adapters.FavoritesRVAdapter;
 import com.lentach.adapters.PostsRVAdapter;
 import com.lentach.components.CommentsComporator;
 import com.lentach.data.DataServiceSingleton;
@@ -96,29 +97,14 @@ public class FavoritesFragment extends Fragment {
         ButterKnife.bind(this, convertView);
 
         mRecyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(layoutManager);
+        StaggeredGridLayoutManager stagManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(stagManager);
     }
 
     //TODO Либо сделать адаптер для модели из Реалма,либо получать из Реалма уж в PostModel
     protected void getFavorites(){
-        PostsRVAdapter mArtistsRVAdapter = new PostsRVAdapter(getApplicationContext(),
+        FavoritesRVAdapter mArtistsRVAdapter = new FavoritesRVAdapter(getApplicationContext(),
                 RealmUtils.getAllPostsFromDB(realm));
-        updateRecyclerView(2);
         mRecyclerView.setAdapter(mArtistsRVAdapter);
     }
-
-    public void updateRecyclerView(int span) {
-        RecyclerView.LayoutManager layoutManager=null;
-        RecyclerView.LayoutManager stagManager=null;
-
-        if(ScreenOrientationHelper.getScreenOrientation(getActivity())==1) {
-            layoutManager = new GridLayoutManager(getActivity(), span);
-            mRecyclerView.setLayoutManager(layoutManager);
-        }
-        else{
-            stagManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
-            mRecyclerView.setLayoutManager(stagManager);}
-    }
-
 }

@@ -172,7 +172,8 @@ public class DataServiceSingleton {
                 ("wall.search",
                         VKParameters.from(VKApiConst.OWNER_ID,
                                 context.getResources().getInteger(R.integer.group_id),
-                                "query",query
+                                "query",query,
+                                "owners_only",1
                                ));
         request1234.executeWithListener(new VKRequest.VKRequestListener() {
             @Override

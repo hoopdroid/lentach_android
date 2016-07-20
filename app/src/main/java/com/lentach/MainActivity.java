@@ -19,6 +19,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.lentach.adapters.PostsRVAdapter;
 import com.lentach.adapters.TopCommentsOfDayRVAdapter;
 import com.lentach.components.PostsLikeComporator;
@@ -91,6 +93,10 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
 
         getNewPostsData(MainActivity.this);
         VkApiManager.getUserInfo(this);
+
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
     }
 
@@ -334,7 +340,7 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
                                 ActivityNavigator.startChatActivity(activity);
                                 break;
                             case 6:
-
+                                ActivityNavigator.startSettingsActivity(activity);
                                 break;
                         }
                         return false;

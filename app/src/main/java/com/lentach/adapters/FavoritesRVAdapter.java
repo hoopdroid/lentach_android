@@ -30,7 +30,7 @@ import butterknife.ButterKnife;
 /**
  * An adapter for the list of Posts
  */
-public class PostsRVAdapter extends RecyclerView.Adapter<PostsRVAdapter.ViewHolder> {
+public class FavoritesRVAdapter extends RecyclerView.Adapter<FavoritesRVAdapter.ViewHolder> {
 
     private List<Post> postsList;
     private Context context;
@@ -41,14 +41,14 @@ public class PostsRVAdapter extends RecyclerView.Adapter<PostsRVAdapter.ViewHold
         super.onViewDetachedFromWindow(holder);
     }
 
-    public PostsRVAdapter(Context context, List<Post> PostsList) {
+    public FavoritesRVAdapter(Context context, List<Post> PostsList) {
         this.context = context;
         this.postsList = PostsList;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_post, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_favorite, viewGroup, false);
         return new ViewHolder(view, viewGroup.getContext());
     }
 
@@ -58,8 +58,7 @@ public class PostsRVAdapter extends RecyclerView.Adapter<PostsRVAdapter.ViewHold
         checkIfCopyHistoryExists(viewHolder, i);
 
         viewHolder.likesAmountText.setText(" "+postsList.get(i).getLikes().getCount());
-        viewHolder.postText.setText(FormatUtil.removeNewLinesFromPostText(postsList.get(i).getText(),120));
-        viewHolder.postDateText.setReferenceTime(postsList.get(i).getDate()*1000L);
+        viewHolder.postText.setText(FormatUtil.removeNewLinesFromPostText(postsList.get(i).getText(),80));
         addClickableLinkToText(viewHolder);
 
         selectAttachmentType(viewHolder, i);
@@ -132,8 +131,6 @@ public class PostsRVAdapter extends RecyclerView.Adapter<PostsRVAdapter.ViewHold
         TextView postText;
         @Bind(R.id.img_post)
         ImageView postImage;
-        @Bind(R.id.timestamp)
-        RelativeTimeTextView postDateText;
         @Bind(R.id.likesAmount)
         TextView likesAmountText;
 

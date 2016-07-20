@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -67,6 +68,8 @@ public class PostCommentsFragment extends BaseFragment implements SwipeRefreshLa
     RelativeLayout commentView;
     @Bind(R.id.gotoVkAuthBtn)
     Button mAuthBtn;
+    @Bind(R.id.progressBar)
+    ProgressBar mProgressBar;
 
     private String token;
 
@@ -144,13 +147,15 @@ public class PostCommentsFragment extends BaseFragment implements SwipeRefreshLa
             @Override
             public void onComplete(VKResponse response) {
                 super.onComplete(response);
-                Toast.makeText(getActivity(), "OK!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Комментарий добавлен", Toast.LENGTH_SHORT).show();
+                swipeRefreshLayout.setRefreshing(true);
+                getCommentsData();
             }
 
             @Override
             public void onError(VKError error) {
                 super.onError(error);
-                Toast.makeText(getActivity(), "NOT OK!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Возникла ошибка!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -182,6 +187,7 @@ public class PostCommentsFragment extends BaseFragment implements SwipeRefreshLa
                 mRecyclerView.setAdapter(mCommentsRVAdapter);
                 mCommentsRVAdapter.notifyDataSetChanged();
                 swipeRefreshLayout.setRefreshing(false);
+                mProgressBar.setVisibility(View.GONE);
             }
 
 

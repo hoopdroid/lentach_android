@@ -11,16 +11,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+        <FrameLayout
             app:layout_scrollFlags="scroll|enterAlways"
-            />
+            android:id="@+id/toolbar_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:layout_scrollFlags="scroll|enterAlways"
+                />
+
+            <com.miguelcatalan.materialsearchview.MaterialSearchView
+                android:id="@+id/search_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
 
     </android.support.design.widget.AppBarLayout>
+
+    <FrameLayout
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:id="@+id/mainFrame"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </FrameLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -34,7 +53,9 @@
         android:id="@+id/rv">
 
     </android.support.v7.widget.RecyclerView>
-
     </android.support.v4.widget.SwipeRefreshLayout>
+
+
+
 
 </android.support.design.widget.CoordinatorLayout>

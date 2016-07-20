@@ -74,7 +74,7 @@ public class DataServiceSingleton {
                     VKList<VKApiPost> postsApi = new VKList<>(response.json, VKApiPost.class);
 
 
-                    VKAttachments.VKApiAttachment vkAttachment = postsApi.get(0).attachments.get(0);
+//                    VKAttachments.VKApiAttachment vkAttachment = postsApi.get(0).attachments.get(0);
                     List<VKApiPost> vkApiPosts = new ArrayList<VKApiPost>();
                     vkApiPosts.addAll(postsApi);
 
@@ -156,6 +156,42 @@ public class DataServiceSingleton {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }
+
+            @Override
+            public void onError(VKError error) {
+                super.onError(error);
+                Toast.makeText(context,R.string.network_error_message,Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void searchOnWallFromQuery(final Context context, final onRequestResult  listener, String query) {
+
+        VKRequest request1234 = new VKRequest
+                ("wall.search",
+                        VKParameters.from(VKApiConst.OWNER_ID,
+                                context.getResources().getInteger(R.integer.group_id),
+                                "query",query
+                               ));
+        request1234.executeWithListener(new VKRequest.VKRequestListener() {
+            @Override
+            public void onComplete(VKResponse response) {
+                super.onComplete(response);
+
+                Gson gson = new Gson();
+                String s="";
+                JSONObject jsonObject = null;
+                try {
+                    jsonObject = (JSONObject) response.json.get("response");
+
+                    s = jsonObject.get("items").toString();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                List<Post> posts= gson.fromJson( s, new TypeToken<ArrayList<Post>>(){}.getType());
+
+                listener.onRequestResult(posts);
             }
 
             @Override

@@ -11,6 +11,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:visibility="gone"
             android:padding="8dp"
             android:textSize="14sp"
             android:layout_width="wrap_content"
@@ -35,7 +36,8 @@
 
 
         <TextView
-            android:padding="12dp"
+            android:layout_marginTop="16dp"
+            android:padding="8dp"
             android:textSize="14sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,10 +53,14 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="8dp">
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="16dp"
+            >
 
             <TextView
                 android:text="1233"
+                android:textSize="12sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/likesAmount"
@@ -73,7 +79,7 @@
 
             <ImageView
                 android:paddingLeft="16dp"
-                android:src="@drawable/ic_thumb_up_outline_grey600_24dp"
+                android:src="@drawable/ic_thumb_up_outline_grey600_18dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/iv_Like"

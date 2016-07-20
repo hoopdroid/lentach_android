@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.lentach.adapters.PostsRVAdapter;
@@ -24,15 +25,13 @@ import com.lentach.components.PostsLikeComporator;
 import com.lentach.components.TopCommentsController;
 import com.lentach.data.DataServiceSingleton;
 import com.lentach.data.vkApi.VkApiManager;
-import com.lentach.db.RealmUtils;
+import com.lentach.fragments.FavoritesFragment;
 import com.lentach.models.comment.Comment;
-import com.lentach.db.realmmodel.PostRealmModel;
-import com.lentach.models.wallpost.Attachment;
-import com.lentach.models.wallpost.Likes;
-import com.lentach.models.wallpost.Photo;
 import com.lentach.models.wallpost.Post;
 import com.lentach.navigator.ActivityNavigator;
+import com.lentach.navigator.FragmentNavigator;
 import com.lentach.util.ScreenOrientationHelper;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -49,7 +48,6 @@ import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnMenuTabClickListener;
 import com.squareup.picasso.Picasso;
 import com.vk.sdk.VKAccessToken;
-import com.vk.sdk.api.model.VKApiPost;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,6 +64,10 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
     BottomBar mBottomBar;
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
+    @Bind(R.id.mainFrame)
+    FrameLayout mFragmentFrame;
+    @Bind(R.id.search_view)
+    MaterialSearchView mSearchView;
 
     private TopCommentsOfDayRVAdapter mTopCommentsOfDayRVAdapter;
     private TopCommentsController mTopCommentsController;
@@ -116,8 +118,6 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
         mSwipeRefreshLayout.setRefreshing(false);}
     }
 
-
-
     public void updateRecyclerView(int span) {
         RecyclerView.LayoutManager layoutManager=null;
         RecyclerView.LayoutManager stagManager=null;
@@ -141,6 +141,33 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
         mRecyclerView.setLayoutManager(layoutManager);
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
+
+        mSearchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                //Do some magic
+                getPostsFromSearch(MainActivity.this,query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                //Do some magic
+                return false;
+            }
+        });
+
+        mSearchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+                //Do some magic
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+                //Do some magic
+            }
+        });
 
 
         mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.coordinatorLayout),
@@ -184,7 +211,10 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        // getMenuInflater().inflate(R.menu.menu_main, menu);
+         getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        mSearchView.setMenuItem(item);
+        mSearchView.setVoiceSearch(true);
         return true;
     }
 
@@ -196,7 +226,7 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_search) {
             return true;
         }
 
@@ -291,18 +321,20 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
                             case 1:
                                 mBottomBar.selectTabAtPosition(0,true);
                                 getNewPostsData(activity);
+                                FragmentNavigator.removeFavoriteFragment(activity,FavoritesFragment.newInstance(),mBottomBar);
                                 break;
                             case 3:
+                                FragmentNavigator.removeFavoriteFragment(activity,FavoritesFragment.newInstance(),mBottomBar);
                                 updateCommentsOfDay("Комментарии дня",false);
                                 break;
                             case 2:
-                                getFavorites();
+                                FragmentNavigator.showFavoriteFragment(MainActivity.this,FavoritesFragment.newInstance(),mBottomBar);
                                 break;
                             case 4:
                                 ActivityNavigator.startChatActivity(activity);
                                 break;
                             case 6:
-                                ActivityNavigator.startVKPermissionActivity(activity);
+
                                 break;
                         }
                         return false;
@@ -331,21 +363,6 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
 
         mRecyclerView.setAdapter(mArtistsRVAdapter);
         mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-    //TODO Либо сделать адаптер для модели из Реалма,либо получать из Реалма уж в PostModel
-    protected void getFavorites(){
-
-        PostsRVAdapter mArtistsRVAdapter = new PostsRVAdapter(getApplicationContext(),
-                RealmUtils.getAllPostsFromDB(realm));
-
-        updateRecyclerView(2);
-        mRecyclerView.setAdapter(mArtistsRVAdapter);
-        mSwipeRefreshLayout.setRefreshing(false);
-
-        mToolbar.setTitle("Избранное");
-        mBottomBar.setVisibility(View.GONE);
-
     }
 
     protected void getCommentsOfDay(){
@@ -387,6 +404,26 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
         },100);
     }
 
+    protected void getPostsFromSearch(final Activity activity,String query) {
+        mToolbar.setTitle(getResources().getString(R.string.app_name));
+        mSwipeRefreshLayout.setRefreshing(true);
+        mBottomBar.setVisibility(View.VISIBLE);
+        DataServiceSingleton.init().searchOnWallFromQuery(activity,new DataServiceSingleton.onRequestResult() {
+            @Override
+            public void onRequestResult(List<Post> posts) {
+
+
+                PostsRVAdapter mArtistsRVAdapter = new PostsRVAdapter(activity,
+                        posts);
+
+                updateRecyclerView(1);
+                mRecyclerView.setAdapter(mArtistsRVAdapter);
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+
+        },query);
+    }
+
     private void getHotPostsData() {
         mToolbar.setTitle(getResources().getString(R.string.app_name));
         mSwipeRefreshLayout.setRefreshing(true);
@@ -408,5 +445,8 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
 
         },100);
     }
+
+
+
 
 }

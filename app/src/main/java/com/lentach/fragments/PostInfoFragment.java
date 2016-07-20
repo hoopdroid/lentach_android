@@ -12,6 +12,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import com.lentach.R;
+import com.lentach.adapters.PostsRVAdapter;
 
 import java.util.regex.Pattern;
 
@@ -63,7 +64,7 @@ public class PostInfoFragment extends BaseFragment {
         //TODO Сделать анимацию
         Animation animation = AnimationUtils.loadAnimation(getActivity(),
                 R.anim.up_from_bottom);
-        animation.setStartOffset(800);
+        animation.setStartOffset(400);
         convertView.startAnimation(animation);
 
         initViewElements(convertView);
@@ -75,16 +76,15 @@ public class PostInfoFragment extends BaseFragment {
     private void initViewElements(View convertView) {
         tabText= (TextView) convertView.findViewById(R.id.postText);
         tabText.setText(mPostText);
-        {
-            tabText.setLinksClickable(true);
-            Pattern httpPattern = Pattern.compile(
-                    "(?:^|[\\W])((ht|f)tp(s?):\\/\\/|www\\.)"
-                            + "(([\\w\\-]+\\.){1,}?([\\w\\-.~]+\\/?)*"
-                            + "[\\p{Alnum}.,%_=?&#\\-+()\\[\\]\\*$~@!:/{};']*)",
-                    Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-            Linkify.addLinks(tabText, httpPattern,"");
-        }
+        addClickableLinkToText(tabText);
+
         cv = (CardView)convertView.findViewById(R.id.cv);
+    }
+
+    private void addClickableLinkToText(TextView postText) {
+        postText.setLinksClickable(true);
+        Pattern httpPattern = Pattern.compile("[a-z]+:\\/\\/[^ \\n]*");
+        Linkify.addLinks(postText, httpPattern,"");
     }
 
 

@@ -47,6 +47,7 @@ public class UserActivity extends BaseActivity {
         });
 
         userName.setText(getIntent().getStringExtra("Username"));
+        if(!sharedPreferences.getString("avatar_image","").equals(""))
         Picasso.with(this).load(sharedPreferences.getString("avatar_image", "")).placeholder(R.drawable.lentach_placeholder).
                 error(R.drawable.lentach_placeholder).into(userImage);
 

@@ -55,7 +55,7 @@ public class PostsRVAdapter extends RecyclerView.Adapter<PostsRVAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
 
-        checkIfCopyHistoryExists(viewHolder, i);
+       // checkIfCopyHistoryExists(viewHolder, i);
 
         viewHolder.likesAmountText.setText(" "+postsList.get(i).getLikes().getCount());
         viewHolder.postText.setText(FormatUtil.removeNewLinesFromPostText(postsList.get(i).getText(),120));

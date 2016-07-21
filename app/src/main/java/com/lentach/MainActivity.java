@@ -70,6 +70,7 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
     FrameLayout mFragmentFrame;
     @Bind(R.id.search_view)
     MaterialSearchView mSearchView;
+    String username;
 
     private TopCommentsOfDayRVAdapter mTopCommentsOfDayRVAdapter;
     private TopCommentsController mTopCommentsController;
@@ -267,7 +268,7 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
         PrimaryDrawerItem itemSettings = new PrimaryDrawerItem().withName("Настройки").withIcon(R.drawable.ic_settings_grey600_24dp);
 
         AccountHeader headerResult;
-        String username="Юзер Лентача";
+        username="Юзер Лентача";
         SharedPreferences sharedPreferences  = getSharedPreferences("Default",MODE_PRIVATE);
         if(VKAccessToken.currentToken()!=null)
             username = sharedPreferences.getString("first_name","Юзер")+" "+sharedPreferences.getString("last_name","Лентача");
@@ -299,6 +300,9 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
 
                         if(profile.getIdentifier() == 1000)
                             ActivityNavigator.startVKPermissionActivity(MainActivity.this);
+
+                        else
+                            ActivityNavigator.startUserActivity(MainActivity.this,null,username);
 
                         return false;
                     }

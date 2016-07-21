@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,7 +54,7 @@ public class ChatActivity extends BaseActivity
     private DatabaseReference mSimpleFirechatDatabaseReference;
     private FirebaseRecyclerAdapter<ChatMessage, FirechatMsgViewHolder>
             mFirebaseAdapter;
-    private Button mSendButton;
+    private ImageView mSendButton;
     private RecyclerView mMessageRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
     private ProgressBar mProgressBar;
@@ -137,7 +138,7 @@ public class ChatActivity extends BaseActivity
             public void afterTextChanged(Editable editable) {
             }
         });
-        mSendButton = (Button) findViewById(R.id.sendButton);
+        mSendButton = (ImageView) findViewById(R.id.sendButton);
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

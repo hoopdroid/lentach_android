@@ -2,6 +2,7 @@ package com.lentach;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -303,11 +304,10 @@ public class PostActivity extends BaseActivity {
         }
 
         if(id==R.id.vk_link){
-            Intent shareIntent = new Intent();
-            shareIntent.setAction(Intent.ACTION_SEND);
-            shareIntent.putExtra(Intent.EXTRA_TEXT, mPost.getText());
-            shareIntent.setType("text/plain");
-            startActivity(Intent.createChooser(shareIntent,"Поделиться лентачом"));
+            String url = "https://vk.com/true_lentach?w=wall"+getResources().getInteger(R.integer.group_id)+"_"+mPost.getId().toString();
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
         }
 
         return super.onOptionsItemSelected(item);

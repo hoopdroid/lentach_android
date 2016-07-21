@@ -13,7 +13,9 @@ import com.lentach.ChatActivity;
 import com.lentach.MainActivity;
 import com.lentach.PhotoViewActivity;
 import com.lentach.PostActivity;
+import com.lentach.R;
 import com.lentach.SettingsActivity;
+import com.lentach.UserActivity;
 import com.lentach.VKPermissionsActivity;
 import com.lentach.components.Constants;
 
@@ -35,6 +37,20 @@ public class ActivityNavigator {
             ActivityOptionsCompat options = ActivityOptionsCompat.
                     makeSceneTransitionAnimation((Activity)context, pair1);
             context.startActivity(intent, options.toBundle());
+        } else
+            context.startActivity(intent);
+    }
+
+    public static void startUserActivity(Activity context, View imageView, String userName) {
+
+        Intent intent = new Intent(context, UserActivity.class);
+
+        intent.putExtra("Username", userName);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            //imageView.setTransitionName(Constants.IMAGE_TRANSITION);
+            context.startActivity(intent);
+            context.overridePendingTransition(R.anim.down_to_top, R.anim.up_from_bottom);
         } else
             context.startActivity(intent);
     }

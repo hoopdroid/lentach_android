@@ -31,13 +31,13 @@ public class VKPermissionsActivity extends AppCompatActivity {
             @Override
             public void onResult(VKAccessToken res) {
 // Пользователь успешно авторизовался
-                ActivityNavigator.startMainActivity(VKPermissionsActivity.this);
-
-
+                finish();
             }
             @Override
             public void onError(VKError error) {
 // Произошла ошибка авторизации (например, пользователь запретил авторизацию)
+                VKAccessToken.currentToken().accessToken = "";
+                finish();
             }
         })) {
             super.onActivityResult(requestCode, resultCode, data);

@@ -2,4 +2,6 @@
 <resources>
     <string name="app_name">Лентач</string>
     <string name="action_settings">Настройки</string>
+    <string name="title_activity_chat">Чат лентача</string>
+    <string name="network_error_message">Ошибка сети</string>
 </resources>

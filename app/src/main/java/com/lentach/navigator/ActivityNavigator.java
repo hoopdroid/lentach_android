@@ -77,6 +77,7 @@ public class ActivityNavigator {
     }
     public static void startVKPermissionActivity(Context context){
         Intent intent = new Intent(context, VKPermissionsActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
     public static void startChatActivity(Context context){

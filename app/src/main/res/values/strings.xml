@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Lentach</string>
     <integer name="com_vk_sdk_AppId">5518427</integer>
-    <string name="banner_ad_unit_id">ca-app-pub-1178779645409927/1184439693</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-1178779645409927/1184439693</string>
     <string name="title_activity_post" translatable="false">PostActivity</string>
     <integer name="group_id">-29534144</integer>
     <string name="title_activity_photo_view" translatable="false">PhotoViewActivity</string>

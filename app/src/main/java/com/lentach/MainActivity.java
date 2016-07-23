@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -70,6 +71,8 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
     FrameLayout mFragmentFrame;
     @Bind(R.id.search_view)
     MaterialSearchView mSearchView;
+
+    MenuItem mSearchItemView;
     String username;
 
     private TopCommentsOfDayRVAdapter mTopCommentsOfDayRVAdapter;
@@ -219,8 +222,8 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
          getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem item = menu.findItem(R.id.action_search);
-        mSearchView.setMenuItem(item);
+        mSearchItemView = menu.findItem(R.id.action_search);
+        mSearchView.setMenuItem(mSearchItemView);
         mSearchView.setVoiceSearch(true);
         return true;
     }
@@ -231,6 +234,7 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
@@ -255,6 +259,8 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
             getNewPostsData(MainActivity.this);
         if(mBottomBar.getCurrentTabPosition()==1)
             getHotPostsData();
+        if(mBottomBar.getCurrentTabPosition()==1)
+            getBestPosts(MainActivity.this);
         mSwipeRefreshLayout.setRefreshing(true);
     }
 
@@ -329,16 +335,24 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                         switch (position) {
                             case 1:
+                                mToolbar.setTitle("Лентач");
+                                mSwipeRefreshLayout.setVisibility(View.VISIBLE);
                                 mBottomBar.selectTabAtPosition(0,true);
+                                mSearchItemView.setVisible(true);
                                 getNewPostsData(activity);
                                 FragmentNavigator.removeFavoriteFragment(activity,FavoritesFragment.newInstance(),mBottomBar);
                                 break;
                             case 3:
+                                mSwipeRefreshLayout.setVisibility(View.GONE);
                                 FragmentNavigator.removeFavoriteFragment(activity,FavoritesFragment.newInstance(),mBottomBar);
                                 updateCommentsOfDay("Комментарии дня",false);
+                                mSearchItemView.setVisible(false);
                                 break;
                             case 2:
+                                mToolbar.setTitle("Избранное");
+                                mSwipeRefreshLayout.setVisibility(View.GONE);
                                 FragmentNavigator.showFavoriteFragment(MainActivity.this,FavoritesFragment.newInstance(),mBottomBar);
+                                mSearchItemView.setVisible(false);
                                 break;
                             case 4:
                                 ActivityNavigator.startChatActivity(activity);

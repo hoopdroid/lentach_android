@@ -38,7 +38,7 @@ public class RealmUtils {
                     post.getDate(),
                     post.getPostType(),
                     post.getText(),
-                    post.getAttachments().get(0).getPhoto().getPhoto604(),
+                    post.getAttachments().get(0).getPhoto().getPhoto604(),//TODO Add workaround
                     post.getIsPinned(),
                     post.getLikes().getCount()
             );

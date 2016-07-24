@@ -60,8 +60,9 @@
             android:name=".ChatActivity"
             android:label="@string/title_activity_chat" />
         <activity android:name=".AuthorizationActivity" />
-        <activity android:name=".SettingsActivity"></activity>
-        <activity android:name=".UserActivity"></activity>
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".UserActivity" />
+        <activity android:name=".VideoViewActivity"></activity>
     </application>
 
 </manifest>

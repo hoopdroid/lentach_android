@@ -56,6 +56,10 @@ public class PostActivity extends BaseActivity {
     ViewPager mViewPager;
     @Bind(R.id.detail_tabs)
     TabLayout mTabLayout;
+    @Bind(R.id.videoButton)
+    ImageView mVideoButton;
+
+    String videoUrl;
 
     DefaultSliderView textSliderView;
     boolean isPostLikedByUser = false;
@@ -186,7 +190,9 @@ public class PostActivity extends BaseActivity {
                  }
             }
                 else if (mPost.getAttachments()!=null&&mPost.getAttachments().get(0).getType().equals("video")){
-                loadVideoAndDisableSlider();}
+                loadVideoAndDisableSlider();
+                mVideoButton.setVisibility(View.VISIBLE);
+                }
         }
         else {
             if (mPost.getPhotoAmount() == 1) {
@@ -204,12 +210,17 @@ public class PostActivity extends BaseActivity {
             @Override
             public void onRequestVideoFromId(VKApiVideo vkApiVideo) {
                 int a  = 5;
+                if(mPost.getAttachments().get(0).getVideo().getOwnerId()==getResources().getInteger(R.integer.group_id))
+                    videoUrl = vkApiVideo.player;
+                else
+                    videoUrl = "";
+
             }
         },mPost.getAttachments().get(0).getVideo().getId());
 
         postImage.setVisibility(View.VISIBLE);
         Picasso.with(this).load(mPost.getAttachments().get(0).
-                getVideo().getPhoto800()).placeholder(R.drawable.lentach_placeholder).
+                getVideo().getPhoto320()).placeholder(R.drawable.lentach_placeholder).
                 error(R.drawable.lentach_placeholder).into(postImage);
         sliderLayout.setVisibility(GONE);
     }
@@ -239,7 +250,6 @@ public class PostActivity extends BaseActivity {
                 });
                 sliderLayout.addSlider(textSliderView);
                 sliderCount++;}
-
         }
         if(sliderCount==1){
         sliderLayout.stopAutoCycle();
@@ -319,11 +329,21 @@ public class PostActivity extends BaseActivity {
         ActivityNavigator.startPhotoActivity(PostActivity.this,mPost.getAttachments().get(mPost.getPhotoAmount()-1).getPhoto().getPhoto604(),postImage);
         else
         {
-            Intent intent = new Intent(Intent.ACTION_SEARCH);
+            /*Intent intent = new Intent(Intent.ACTION_SEARCH);
             intent.setPackage("com.google.android.youtube");
             intent.putExtra("query", mPost.getAttachments().get(0).getVideo().getTitle());
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
+            */
+
+            if(!videoUrl.equals(""))
+            ActivityNavigator.startVideoActivity(PostActivity.this,videoUrl);
+            else {Intent intent = new Intent(Intent.ACTION_SEARCH);
+            intent.setPackage("com.google.android.youtube");
+            intent.putExtra("query", mPost.getAttachments().get(0).getVideo().getTitle());
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);}
+
         }
     }
 

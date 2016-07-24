@@ -10,5 +10,6 @@ public class Constants {
     public static final int LOADING_TIME = 1000;
     public static final int LOADING_INTERVAL = 200;
     public static final int POST_TEXT_LENGTH = 100;
+    public static final int ANIM_DURATION_TOOLBAR = 300;
 
 }

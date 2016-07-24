@@ -1,6 +1,7 @@
 package com.lentach;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -14,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +26,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.lentach.adapters.PostsRVAdapter;
 import com.lentach.adapters.TopCommentsOfDayRVAdapter;
+import com.lentach.components.Constants;
 import com.lentach.components.PostsLikeComporator;
 import com.lentach.components.TopCommentsController;
 import com.lentach.data.DataServiceSingleton;
@@ -33,6 +36,7 @@ import com.lentach.models.comment.Comment;
 import com.lentach.models.wallpost.Post;
 import com.lentach.navigator.ActivityNavigator;
 import com.lentach.navigator.FragmentNavigator;
+import com.lentach.util.AnimationBuilderHelper;
 import com.lentach.util.ScreenOrientationHelper;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -107,38 +111,39 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
     private void updateView(String header, boolean isBottom) {
         mSwipeRefreshLayout.setRefreshing(false);
         mToolbar.setTitle(header);
-        if(!isBottom)
-        mBottomBar.setVisibility(View.GONE);
+        if (!isBottom)
+            mBottomBar.setVisibility(View.GONE);
         else
-        mBottomBar.setVisibility(View.VISIBLE);
+            mBottomBar.setVisibility(View.VISIBLE);
         mRecyclerView.setAdapter(mTopCommentsOfDayRVAdapter);
         updateRecyclerView(1);
     }
 
     private void updateCommentsOfDay(String header, boolean isBottom) {
         mSwipeRefreshLayout.setRefreshing(true);
-        if(mTopCommentsController.getArtistsList().size()>0){
-        mToolbar.setTitle(header);
-        if(!isBottom)
-            mBottomBar.setVisibility(View.GONE);
-        else
-            mBottomBar.setVisibility(View.VISIBLE);
-        mRecyclerView.setAdapter(mTopCommentsOfDayRVAdapter);
-        updateRecyclerView(1);
-        mSwipeRefreshLayout.setRefreshing(false);}
+        if (mTopCommentsController.getArtistsList().size() > 0) {
+            mToolbar.setTitle(header);
+            if (!isBottom)
+                mBottomBar.setVisibility(View.GONE);
+            else
+                mBottomBar.setVisibility(View.VISIBLE);
+            mRecyclerView.setAdapter(mTopCommentsOfDayRVAdapter);
+            updateRecyclerView(1);
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     public void updateRecyclerView(int span) {
-        RecyclerView.LayoutManager layoutManager=null;
-        RecyclerView.LayoutManager stagManager=null;
+        RecyclerView.LayoutManager layoutManager = null;
+        RecyclerView.LayoutManager stagManager = null;
 
-        if(ScreenOrientationHelper.getScreenOrientation(MainActivity.this)==1) {
+        if (ScreenOrientationHelper.getScreenOrientation(MainActivity.this) == 1) {
             layoutManager = new GridLayoutManager(this, span);
             mRecyclerView.setLayoutManager(layoutManager);
+        } else {
+            stagManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+            mRecyclerView.setLayoutManager(stagManager);
         }
-        else{
-            stagManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
-            mRecyclerView.setLayoutManager(stagManager);}
 
     }
 
@@ -156,7 +161,7 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //Do some magic
-                getPostsFromSearch(MainActivity.this,query);
+                getPostsFromSearch(MainActivity.this, query);
                 return false;
             }
 
@@ -214,14 +219,16 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
                 }
             }
         });
-        mBottomBar.mapColorForTab(1, ContextCompat.getColor(this,R.color.accent));
+        mBottomBar.mapColorForTab(1, ContextCompat.getColor(this, R.color.accent));
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-         getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        AnimationBuilderHelper.startIntroToolbarAnimation(this,mToolbar);
+        AnimationBuilderHelper.startIntroBottomAnimation(this,mBottomBar);
         mSearchItemView = menu.findItem(R.id.action_search);
         mSearchView.setMenuItem(mSearchItemView);
         mSearchView.setVoiceSearch(true);
@@ -255,11 +262,11 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
 
     @Override
     public void onRefresh() {
-        if(mBottomBar.getCurrentTabPosition()==0)
+        if (mBottomBar.getCurrentTabPosition() == 0)
             getNewPostsData(MainActivity.this);
-        if(mBottomBar.getCurrentTabPosition()==1)
+        if (mBottomBar.getCurrentTabPosition() == 1)
             getHotPostsData();
-        if(mBottomBar.getCurrentTabPosition()==1)
+        if (mBottomBar.getCurrentTabPosition() == 1)
             getBestPosts(MainActivity.this);
         mSwipeRefreshLayout.setRefreshing(true);
     }
@@ -274,10 +281,10 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
         PrimaryDrawerItem itemSettings = new PrimaryDrawerItem().withName("Настройки").withIcon(R.drawable.ic_settings_grey600_24dp);
 
         AccountHeader headerResult;
-        username="Юзер Лентача";
-        SharedPreferences sharedPreferences  = getSharedPreferences("Default",MODE_PRIVATE);
-        if(VKAccessToken.currentToken()!=null)
-            username = sharedPreferences.getString("first_name","Юзер")+" "+sharedPreferences.getString("last_name","Лентача");
+        username = "Юзер Лентача";
+        SharedPreferences sharedPreferences = getSharedPreferences("Default", MODE_PRIVATE);
+        if (VKAccessToken.currentToken() != null)
+            username = sharedPreferences.getString("first_name", "Юзер") + " " + sharedPreferences.getString("last_name", "Лентача");
 
         //initialize and create the image loader logic
         DrawerImageLoader.init(new AbstractDrawerImageLoader() {
@@ -296,19 +303,19 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
                 .withActivity(this)
                 .withHeaderBackground(R.color.primary)
                 .addProfiles(
-                        new ProfileDrawerItem().withName(username).withIcon(sharedPreferences.getString("avatar_image","")),
+                        new ProfileDrawerItem().withName(username).withIcon(sharedPreferences.getString("avatar_image", "")),
                         new ProfileSettingDrawerItem().withName("Настройки пользователя").withIcon
-                         (R.drawable.settings).withIdentifier(1000)
+                                (R.drawable.settings).withIdentifier(1000)
                 )
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
                     public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
 
-                        if(profile.getIdentifier() == 1000)
+                        if (profile.getIdentifier() == 1000)
                             ActivityNavigator.startVKPermissionActivity(MainActivity.this);
 
                         else
-                            ActivityNavigator.startUserActivity(MainActivity.this,null,username);
+                            ActivityNavigator.startUserActivity(MainActivity.this, null, username);
 
                         return false;
                     }
@@ -337,21 +344,20 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
                             case 1:
                                 mToolbar.setTitle("Лентач");
                                 mSwipeRefreshLayout.setVisibility(View.VISIBLE);
-                                mBottomBar.selectTabAtPosition(0,true);
                                 mSearchItemView.setVisible(true);
                                 getNewPostsData(activity);
-                                FragmentNavigator.removeFavoriteFragment(activity,FavoritesFragment.newInstance(),mBottomBar);
+                                FragmentNavigator.removeFavoriteFragment(activity, FavoritesFragment.newInstance(), mBottomBar);
                                 break;
                             case 3:
                                 mSwipeRefreshLayout.setVisibility(View.GONE);
-                                FragmentNavigator.removeFavoriteFragment(activity,FavoritesFragment.newInstance(),mBottomBar);
-                                updateCommentsOfDay("Комментарии дня",false);
+                                FragmentNavigator.removeFavoriteFragment(activity, FavoritesFragment.newInstance(), mBottomBar);
+                                updateCommentsOfDay("Комментарии дня", false);
                                 mSearchItemView.setVisible(false);
                                 break;
                             case 2:
                                 mToolbar.setTitle("Избранное");
                                 mSwipeRefreshLayout.setVisibility(View.GONE);
-                                FragmentNavigator.showFavoriteFragment(MainActivity.this,FavoritesFragment.newInstance(),mBottomBar);
+                                FragmentNavigator.showFavoriteFragment(MainActivity.this, FavoritesFragment.newInstance(), mBottomBar);
                                 mSearchItemView.setVisible(false);
                                 break;
                             case 4:
@@ -368,7 +374,7 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
 
     }
 
-    protected void getBestPosts(final Activity activity){
+    protected void getBestPosts(final Activity activity) {
         mToolbar.setTitle(getResources().getString(R.string.app_name));
         mSwipeRefreshLayout.setRefreshing(true);
         DataServiceSingleton.init().getBestPostsFromServer(new DataServiceSingleton.onRequestWebApiResult() {
@@ -380,7 +386,7 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
     }
 
     private void updateDataInRecycler(List<Post> posts, Activity activity) {
-        Collections.sort(posts,new PostsLikeComporator());
+        Collections.sort(posts, new PostsLikeComporator());
 
         PostsRVAdapter mArtistsRVAdapter = new PostsRVAdapter(activity,
                 posts);
@@ -389,11 +395,12 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
-    protected void getCommentsOfDay(){
+    protected void getCommentsOfDay() {
 
         mSwipeRefreshLayout.setRefreshing(true);
         DataServiceSingleton.init().getCommentsOfDayFromServer(new DataServiceSingleton.onRequestCommentsOFDayResult() {
             int a = 5;
+
             @Override
             public void onRequestCommentsResult(List<Comment> wallComments) {
                 comments = new ArrayList<Comment>();
@@ -407,32 +414,14 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
 
             }
 
-        });}
+        });
+    }
+
     protected void getNewPostsData(final Activity activity) {
         mToolbar.setTitle(getResources().getString(R.string.app_name));
         mSwipeRefreshLayout.setRefreshing(true);
         mBottomBar.setVisibility(View.VISIBLE);
-        DataServiceSingleton.init().getPostsFromWall(activity,new DataServiceSingleton.onRequestResult() {
-            @Override
-            public void onRequestResult(List<Post> posts) {
-
-
-                PostsRVAdapter mArtistsRVAdapter = new PostsRVAdapter(activity,
-                        posts);
-
-                updateRecyclerView(1);
-                mRecyclerView.setAdapter(mArtistsRVAdapter);
-                mSwipeRefreshLayout.setRefreshing(false);
-                }
-
-        },100);
-    }
-
-    protected void getPostsFromSearch(final Activity activity,String query) {
-        mToolbar.setTitle(getResources().getString(R.string.app_name));
-        mSwipeRefreshLayout.setRefreshing(true);
-        mBottomBar.setVisibility(View.VISIBLE);
-        DataServiceSingleton.init().searchOnWallFromQuery(activity,new DataServiceSingleton.onRequestResult() {
+        DataServiceSingleton.init().getPostsFromWall(activity, new DataServiceSingleton.onRequestResult() {
             @Override
             public void onRequestResult(List<Post> posts) {
 
@@ -445,18 +434,38 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
                 mSwipeRefreshLayout.setRefreshing(false);
             }
 
-        },query);
+        }, 100);
+    }
+
+    protected void getPostsFromSearch(final Activity activity, String query) {
+        mToolbar.setTitle(getResources().getString(R.string.app_name));
+        mSwipeRefreshLayout.setRefreshing(true);
+        mBottomBar.setVisibility(View.VISIBLE);
+        DataServiceSingleton.init().searchOnWallFromQuery(activity, new DataServiceSingleton.onRequestResult() {
+            @Override
+            public void onRequestResult(List<Post> posts) {
+
+
+                PostsRVAdapter mArtistsRVAdapter = new PostsRVAdapter(activity,
+                        posts);
+
+                updateRecyclerView(1);
+                mRecyclerView.setAdapter(mArtistsRVAdapter);
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+
+        }, query);
     }
 
     private void getHotPostsData() {
         mToolbar.setTitle(getResources().getString(R.string.app_name));
         mSwipeRefreshLayout.setRefreshing(true);
         mBottomBar.setVisibility(View.VISIBLE);
-        DataServiceSingleton.init().getPostsFromWall(MainActivity.this,new DataServiceSingleton.onRequestResult() {
+        DataServiceSingleton.init().getPostsFromWall(MainActivity.this, new DataServiceSingleton.onRequestResult() {
             @Override
             public void onRequestResult(List<Post> posts) {
 
-                Collections.sort(posts,new PostsLikeComporator());
+                Collections.sort(posts, new PostsLikeComporator());
 
                 updateRecyclerView(1);
                 PostsRVAdapter mArtistsRVAdapter = new PostsRVAdapter(getApplicationContext(),
@@ -467,7 +476,7 @@ public class MainActivity extends BaseActivity implements  SwipeRefreshLayout.On
             }
 
 
-        },100);
+        }, 100);
     }
 
 

@@ -36,6 +36,7 @@ public class VKPermissionsActivity extends AppCompatActivity {
             @Override
             public void onError(VKError error) {
 // Произошла ошибка авторизации (например, пользователь запретил авторизацию)
+                if(VKAccessToken.currentToken()!=null)
                 VKAccessToken.currentToken().accessToken = "";
                 finish();
             }

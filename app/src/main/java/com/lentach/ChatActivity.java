@@ -24,9 +24,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
-import com.bumptech.glide.Glide;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.auth.api.Auth;
@@ -42,6 +39,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.lentach.models.ChatMessage;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -172,9 +170,8 @@ public class ChatActivity extends BaseActivity
                                     .getDrawable(ChatActivity.this,
                                             R.drawable.ic_account_circle_black_36dp));
                 } else {
-                    Glide.with(ChatActivity.this)
-                            .load(friendlyMessage.getPhotoUrl())
-                            .into(viewHolder.userImageView);
+                    Picasso.with(ChatActivity.this).load(friendlyMessage.getPhotoUrl()).
+                            error(R.drawable.account).into(viewHolder.userImageView);
                 }
             }
         };

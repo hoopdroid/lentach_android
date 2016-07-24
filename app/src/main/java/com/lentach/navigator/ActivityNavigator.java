@@ -17,7 +17,9 @@ import com.lentach.R;
 import com.lentach.SettingsActivity;
 import com.lentach.UserActivity;
 import com.lentach.VKPermissionsActivity;
+import com.lentach.VideoViewActivity;
 import com.lentach.components.Constants;
+import com.lentach.models.wallpost.Video;
 
 
 /**
@@ -86,6 +88,12 @@ public class ActivityNavigator {
     }
     public static void startSettingsActivity(Context context){
         Intent intent = new Intent(context, SettingsActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startVideoActivity(Context context,String url){
+        Intent intent = new Intent(context, VideoViewActivity.class);
+        intent.putExtra("url",url);
         context.startActivity(intent);
     }
 

@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.widget.ImageView;
 
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
+import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKAccessTokenTracker;
@@ -41,6 +42,12 @@ public class BaseApplication extends Application {
 
         RealmConfiguration config = new RealmConfiguration.Builder(this).build();
         Realm.setDefaultConfiguration(config);
+
+        Picasso.Builder builder = new Picasso.Builder(this);
+        builder.downloader(
+                new OkHttpDownloader(this, Integer.MAX_VALUE));
+        Picasso built = builder.build();
+        Picasso.setSingletonInstance(built);
 
         //initialize and create the image loader logic for Material Drawer
         DrawerImageLoader.init(new DrawerImageLoader.IDrawerImageLoader() {

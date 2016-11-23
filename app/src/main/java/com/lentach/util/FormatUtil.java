@@ -1,7 +1,7 @@
 package com.lentach.util;
 
 
-import com.lentach.components.Constants;
+import com.lentach.ui.components.Constants;
 
 public class FormatUtil {
 

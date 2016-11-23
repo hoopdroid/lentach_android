@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Лентач</string>
+    <string name="app_name_toolbar">¯|_ (ツ) _ |¯</string>
     <string name="action_settings">Настройки</string>
     <string name="title_activity_chat">Чат лентача</string>
     <string name="network_error_message">Ошибка сети</string>
+    <string name="about_page_description_text">Неофициальное мобильное приложение паблика Лентач. Весь контент принадлежит ВКонтакте. Приятного использования!</string>
 </resources>

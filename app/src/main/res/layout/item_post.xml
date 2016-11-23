@@ -1,11 +1,11 @@
-<android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/apk/res-auto"
     android:id="@+id/post_container"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    card_view:cardCornerRadius="5dp">
+    android:layout_marginBottom="8dp"
+    app:elevation="3dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,60 +13,91 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/image_post_size"
-            android:fitsSystemWindows="true"
-            android:scaleType="centerCrop"
             android:id="@+id/img_post"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true" />
+            android:adjustViewBounds="true"
+            android:fitsSystemWindows="true"
+            android:scaleType="fitXY"
+            tools:background="@drawable/lentach_web" />
 
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentRight="false"
+            android:layout_alignParentTop="false"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@+id/img_post"
+            android:padding="8dp"
+            android:text="Name"
+            android:textIsSelectable="true"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:typeface="monospace"
+            android:visibility="visible" />
 
-
-            <TextView
-                android:padding="8dp"
-                android:textSize="14sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tv_name"
-                android:text="Name"
-                android:layout_alignParentTop="false"
-                android:layout_toEndOf="@+id/img_post"
-                android:layout_alignParentLeft="false"
-                android:layout_alignParentBottom="false"
-                android:layout_alignParentRight="false"/>
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:text="1233"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/likesAmount"
-                android:layout_centerVertical="true"
-                android:layout_toStartOf="@+id/iv_Like" />
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:visibility="visible">
 
 
             <com.github.curioustechizen.ago.RelativeTimeTextView
-                android:paddingLeft="8dp"
                 android:id="@+id/timestamp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_alignParentStart="true"
-                />
+                android:layout_centerVertical="true"
+                android:paddingLeft="8dp" />
 
 
             <ImageView
-                android:src="@drawable/ic_heart_outline_grey600_24dp"
+                android:id="@+id/iv_Like"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:id="@+id/iv_Like"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/commentsAmount"
                 android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true" />
+                android:src="@drawable/ic_heart_outline_grey600_24dp" />
+
+            <ImageView
+                android:id="@+id/iv_Comments"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="42dp"
+                android:layout_toStartOf="@+id/iv_Like"
+                android:src="@drawable/ic_comment_outline_grey600_24dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/likesAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="4dp"
+                android:layout_toStartOf="@+id/iv_Like"
+                android:text="1233" />
+
+            <TextView
+                android:id="@+id/commentsAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/iv_Comments"
+                android:text="1233"
+                android:visibility="gone" />
 
         </RelativeLayout>
 

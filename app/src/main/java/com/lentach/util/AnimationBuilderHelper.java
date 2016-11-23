@@ -1,10 +1,16 @@
 package com.lentach.util;
 
+import android.app.Activity;
 import android.content.Context;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 
-import com.lentach.components.Constants;
+import com.lentach.ui.components.Constants;
 import com.roughike.bottombar.BottomBar;
 
 /**
@@ -25,6 +31,36 @@ public class AnimationBuilderHelper {
 
     }
 
+    public static void startIntroFabAnimation(Context context, FloatingActionButton fab) {
+
+        int actionbarSize = dpToPx(context,56);
+
+        fab.setAlpha(0.0f);
+
+        fab.setVisibility(View.VISIBLE);
+
+        fab.animate()
+                .alpha(1f)
+                .setDuration(Constants.ANIM_DURATION_TOOLBAR)
+                .setStartDelay(800);
+
+    }
+
+    public static void startIntroViewAnimation(Context context,View fab) {
+
+        int actionbarSize = dpToPx(context,56);
+
+        fab.setAlpha(0.2f);
+
+        fab.setVisibility(View.VISIBLE);
+
+        fab.animate()
+                .alpha(1f)
+                .setDuration(Constants.ANIM_DURATION_TOOLBAR)
+                .setStartDelay(500);
+
+    }
+
     public static void startIntroBottomAnimation(Context context, BottomBar mBottomBar) {
 
         int actionbarSize = dpToPx(context,56);
@@ -40,6 +76,21 @@ public class AnimationBuilderHelper {
         DisplayMetrics displayMetrics =  context.getResources().getDisplayMetrics();
         int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
         return px;
+    }
+
+    public static void startIntroAnimation(Activity activity, RecyclerView recyclerView) {
+
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        int height = display.getHeight();
+
+        recyclerView.setTranslationY(height);
+        recyclerView.setAlpha(0f);
+        recyclerView.animate()
+                .translationY(0)
+                .setDuration(400)
+                .alpha(1f)
+                .setInterpolator(new AccelerateDecelerateInterpolator())
+                .start();
     }
 
 }

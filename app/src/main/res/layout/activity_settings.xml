@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/coordinatorLayout"
-    tools:context="com.lentach.MainActivity">
+    tools:context=".ui.activities.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -24,9 +24,8 @@
     </android.support.design.widget.AppBarLayout>
 
     <FrameLayout
-        android:paddingTop="72dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_below="@+id/appbar"
-        android:layout_margin="16dp"
         android:id="@+id/settingsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

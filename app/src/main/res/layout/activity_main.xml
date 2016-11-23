@@ -5,6 +5,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,7 +13,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/coordinatorLayout"
-    tools:context="com.lentach.MainActivity">
+    tools:context=".ui.activities.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -48,14 +49,16 @@
         android:layout_height="match_parent">
     </FrameLayout>
 
+
     <android.support.v4.widget.SwipeRefreshLayout
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:id="@+id/swipe_refresh"
+        android:transitionGroup="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
+        <android.support.v7.widget.RecyclerView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/rv">
 
@@ -64,6 +67,7 @@
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <com.google.android.gms.ads.AdView
+        android:visibility="gone"
         android:layout_gravity="bottom"
         android:layout_centerHorizontal="true"
         android:id="@+id/adView"
@@ -73,6 +77,8 @@
         ads:adUnitId="@string/banner_ad_unit_id">
     </com.google.android.gms.ads.AdView>
 
+
 </android.support.design.widget.CoordinatorLayout>
+
 
 </RelativeLayout>

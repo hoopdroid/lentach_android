@@ -5,6 +5,6 @@
     android:id="@+id/activity_vkpermissions"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.lentach.VKPermissionsActivity">
+    tools:context=".ui.activities.VKPermissionsActivity">
 
 </android.support.design.widget.CoordinatorLayout>

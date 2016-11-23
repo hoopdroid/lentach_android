@@ -9,39 +9,26 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <TextView
-                android:padding="8dp"
-                android:textSize="14sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/tv_name"
-                android:textStyle="bold"
-                android:text="Name"
-                android:layout_alignParentTop="false"
-                android:layout_toEndOf="@+id/img_post"
-                android:layout_alignParentLeft="false"
-                android:layout_alignParentBottom="false"
-                android:layout_alignParentRight="false"/>
-
-            <TextView
-                android:padding="8dp"
-                android:textSize="14sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tv_toPost"
-                android:textStyle="bold"
-                android:text="К посту"
+                android:layout_alignParentBottom="false"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentRight="false"
                 android:layout_alignParentTop="false"
                 android:layout_toEndOf="@+id/img_post"
-                android:layout_alignParentLeft="false"
-                android:layout_alignParentBottom="false"
-                android:layout_alignParentRight="false"/>
-        </LinearLayout>
+                android:padding="8dp"
+                android:text="Name"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
 
-
+        </RelativeLayout>
 
 
         <FrameLayout
@@ -50,29 +37,35 @@
             android:layout_height="wrap_content">
 
 
-
             <ImageView
                 android:id="@+id/postImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
-                />
+                android:visibility="gone" />
 
         </FrameLayout>
 
         <TextView
-            android:padding="12dp"
-            android:textSize="14sp"
+            android:id="@+id/tv_textComment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_textComment"
-            android:text="Text"
-            android:layout_alignParentTop="false"
-            android:layout_toEndOf="@+id/img_post"
-            android:layout_alignParentLeft="false"
             android:layout_alignParentBottom="false"
-            android:layout_alignParentRight="false"/>
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentRight="false"
+            android:layout_alignParentTop="false"
+            android:layout_margin="8dp"
+            android:layout_toEndOf="@+id/img_post"
+            android:padding="12dp"
+            android:text="Text"
+            android:textSize="16sp"
+            android:typeface="monospace" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/md_light_dividers"
+            ></View>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -88,24 +81,39 @@
                 android:layout_toStartOf="@+id/iv_Like" />
 
             <TextView
-                android:paddingLeft="8dp"
-                android:textSize="12sp"
-                android:text="5 минут назад"
                 android:id="@+id/tv_PostDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:layout_alignParentStart="true" />
+                android:layout_marginStart="16dp"
+                android:paddingLeft="8dp"
+                android:text="5 минут назад"
+                android:textSize="12sp" />
 
-            <ImageView
-                android:paddingLeft="16dp"
-                android:src="@drawable/ic_thumb_up_outline_grey600_24dp"
+
+            <TextView
+                android:id="@+id/tv_toPost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/iv_Like"
-                android:layout_marginEnd="10dp"
+                android:padding="8dp"
+                android:text="К посту"
+                android:textColor="@color/accent"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:typeface="monospace"
                 android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true" />
+                android:layout_centerHorizontal="true" />
+
+            <ImageView
+                android:id="@+id/iv_Like"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="16dp"
+                android:paddingLeft="16dp"
+                android:src="@drawable/ic_thumb_up_outline_grey600_24dp" />
 
         </RelativeLayout>
 

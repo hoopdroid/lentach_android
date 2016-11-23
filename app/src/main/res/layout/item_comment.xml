@@ -2,6 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="8dp"
     card_view:cardCornerRadius="5dp">
 
@@ -13,36 +14,64 @@
         <TextView
             android:visibility="gone"
             android:padding="8dp"
-            android:textSize="14sp"
+            tools:textSize="14sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tv_name"
-            android:textStyle="bold"
-            android:text="Name"
+            tools:textStyle="bold"
+            tools:text="Name"
             android:layout_alignParentTop="false"
             android:layout_toEndOf="@+id/img_post"
             android:layout_alignParentLeft="false"
             android:layout_alignParentBottom="false"
             android:layout_alignParentRight="false"/>
 
-
-            <ImageView
-                android:visibility="gone"
-                android:id="@+id/postImage"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/image_post_size"
-                android:fitsSystemWindows="true"
-                />
+                android:layout_height="wrap_content">
+
+
+                <ImageView
+                    android:visibility="gone"
+                    android:src="@color/primary_dark"
+                    android:id="@+id/postImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fitsSystemWindows="true"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY" />
+
+                <RelativeLayout
+                    android:visibility="gone"
+                    android:gravity="right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_margin="16dp"
+                        android:gravity="center"
+                        android:background="@drawable/cycle_shape"
+                        android:id="@+id/ratingText"
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        tools:text="7.0"
+                        tools:textColor="@color/primary_dark"
+                        android:typeface="normal"
+                        tools:textSize="14sp"
+                        tools:textAllCaps="false"
+                        tools:textStyle="normal|bold" />
+                </RelativeLayout>
+
+            </RelativeLayout>
 
 
         <TextView
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:padding="8dp"
-            android:textSize="14sp"
+            tools:textSize="14sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tv_textComment"
-            android:text="Text"
+            tools:text="Text"
             android:layout_alignParentTop="false"
             android:layout_toEndOf="@+id/img_post"
             android:layout_alignParentLeft="false"
@@ -53,24 +82,29 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="4dp"
             >
 
             <TextView
-                android:text="1233"
-                android:textSize="12sp"
+                android:id="@+id/likesAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/likesAmount"
                 android:layout_centerVertical="true"
-                android:layout_toStartOf="@+id/iv_Like" />
+                android:layout_toStartOf="@+id/iv_Like"
+                android:fontFamily="monospace"
+                tools:text="1233"
+                tools:textAllCaps="false"
+                tools:textSize="16sp"
+                tools:textStyle="bold"
+                android:typeface="sans" />
 
             <com.github.curioustechizen.ago.RelativeTimeTextView
                 android:paddingLeft="8dp"
-                android:textSize="12sp"
-                android:text="5 минут назад"
+                tools:textSize="12sp"
+                tools:text="5 минут назад"
                 android:id="@+id/tv_PostDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.widget.ImageView;
 
+import com.lentach.ui.activities.MainActivity;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;

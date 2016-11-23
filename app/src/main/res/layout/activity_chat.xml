@@ -6,6 +6,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
+    <ImageView
+        android:alpha="0.7"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -67,6 +74,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 >
+
+
                 <EditText
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"

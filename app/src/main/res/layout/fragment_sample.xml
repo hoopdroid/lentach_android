@@ -4,45 +4,107 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context=".PostActivity">
+    tools:context=".ui.activities.PostActivity">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingTop="24dp">
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/cv"
+        <GridLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alignmentMode="alignBounds"
+            android:columnCount="3"
+            android:rowCount="7"
+            android:useDefaultMargins="false"
+            android:transitionGroup="false"
+            android:clipToPadding="false"
+            android:background="@android:color/transparent">
+
+
+            <LinearLayout
+                android:layout_margin="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                >
+                <TextView
+                    android:id="@+id/postText"
+                    android:layout_width="wrap_content"
+                    android:text="Текст"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:id="@+id/postText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Post text"
-                        />
-
+                    android:fontFamily="monospace"
+                    android:textSize="14sp"
+                    android:textStyle="normal|bold"
+                    android:textAlignment="center" />
                 </LinearLayout>
 
-            </android.support.v7.widget.CardView>
+            <LinearLayout
+                android:id="@+id/shot_actions"
+                android:layout_columnSpan="3"
+                android:layout_width="match_parent"
+                android:layout_marginStart="@dimen/padding_normal"
+                android:paddingTop="@dimen/spacing_normal"
+                android:layout_marginEnd="@dimen/padding_normal"
+                android:clipToPadding="false">
+
+                <Button
+                    android:id="@+id/shot_like_count"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableTop="@drawable/ic_heart_pulse_grey600_24dp"
+                    android:text="33 likes"
+                    android:background="@null"
+                    style="@style/Widget.Plaid.InlineActionButton"
+                    android:fontFamily="serif" />
+
+                <Button
+                    android:id="@+id/shot_view_count"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableTop="@drawable/ic_eye_grey600_24dp"
+                    android:background="@null"
+                    android:text="33 views"
+                    style="@style/Widget.Plaid.InlineActionButton"
+                    android:fontFamily="serif" />
+
+                <Button
+                    android:id="@+id/shot_share_action"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginBottom="@dimen/spacing_normal"
+                    android:drawableTop="@drawable/ic_share_variant_grey600_24dp"
+                    android:text="Поделиться"
+                    android:background="@null"
+                    style="@style/Widget.Plaid.InlineActionButton"
+                    android:typeface="normal"
+                    android:fontFamily="serif" />
+
+            </LinearLayout>
 
 
-        </LinearLayout>
+            <!-- can't use a marginEnd on the above image view as it pushes in the whole column so instead
+                 add another column to contain the below space element -->
+
+            <Space
+                android:layout_width="@dimen/avatar_margin"
+                android:layout_rowSpan="2" />
+
+
+            <!-- GridLayout seems to ignore layout_marginBottom so add another row with a space -->
+
+            <Space
+                android:layout_height="@dimen/avatar_margin"
+                android:layout_columnSpan="3" />
+
+        </GridLayout>
+
 
     </android.support.v4.widget.NestedScrollView>
 

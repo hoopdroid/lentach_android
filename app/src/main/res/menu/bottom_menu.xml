@@ -1,16 +1,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/bottomBarItemOne"
-        android:icon="@drawable/ic_file_document_box_grey600_24dp"
+        android:icon="@drawable/ic_file_document_box_white_24dp"
         android:title="Новое" />
     <item
         android:id="@+id/bottomBarItemTwo"
-        android:icon="@drawable/ic_fire_grey600_24dp"
+        android:icon="@drawable/ic_fire_white_24dp"
         android:title="Горячее" />
 
     <item
         android:id="@+id/bottomBarItemThree"
-        android:icon="@drawable/ic_trophy_variant_grey600_24dp"
+        android:icon="@drawable/ic_trophy_variant_white_24dp"
         android:title="Лучшее" />
 
 </menu>
